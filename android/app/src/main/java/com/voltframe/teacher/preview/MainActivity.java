@@ -21,12 +21,13 @@ public class MainActivity extends Activity {
       @Override public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) { return loader.shouldInterceptRequest(request.getUrl()); }
       @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         Uri uri=request.getUrl();
-        if (uri.getHost()!=null && uri.getHost().equals("appassets.androidplatform.net")) return false;
+        if ("https".equals(uri.getScheme()) && "appassets.androidplatform.net".equals(uri.getHost()) && uri.getPath()!=null && uri.getPath().startsWith("/assets/")) return false;
         if ("https".equals(uri.getScheme()) || "http".equals(uri.getScheme())) {
-          startActivity(new Intent(Intent.ACTION_VIEW, uri));
+          try { startActivity(new Intent(Intent.ACTION_VIEW, uri)); } catch (android.content.ActivityNotFoundException ignored) { }
           return true;
         }
-        return false;
+        // Block intent:, file:, content:, javascript: and unrecognized URL schemes.
+        return true;
       }
     });
     WebSettings settings=webView.getSettings();
