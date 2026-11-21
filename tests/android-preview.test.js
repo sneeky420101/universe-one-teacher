@@ -22,3 +22,10 @@ test('Android preview CI includes all required offline assets and pinned toolcha
  assert.match(y,/assembleDebug/);
  assert.doesNotMatch(y,/bundleRelease|publishRelease/);
 });
+
+test('local Gradle builds bundle offline classroom without CI-only preparation',()=>{
+ const gradle=read('android/app/build.gradle');
+ assert.match(gradle,/stageClassroomAssets/);
+ assert.match(gradle,/task\.dependsOn\('stageClassroomAssets'\)/);
+ for(const name of ['index.html','quest.html','privacy.html','curriculum\/catalog.json'])assert.ok(gradle.includes(name),name);
+});
