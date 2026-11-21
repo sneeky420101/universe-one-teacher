@@ -1,0 +1,22 @@
+name: Universe One classroom checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Source smoke tests
+        run: npm test
+      - name: Syntax checks
+        run: |
+          node --check server.js
+          node --check tests/smoke.test.js
