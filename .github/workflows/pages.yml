@@ -29,6 +29,9 @@ jobs:
           test -s icon.svg
           node -e "const fs=require('fs');const m=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));if(!m.name||!m.start_url)process.exit(1)"
   deploy:
+    # Owner pre-launch hold: no automatic public deployment from pushes.
+    # Enable only after verified tests, hosting configuration and explicit release approval.
+    if: ${{ false }}
     needs: verify
     runs-on: ubuntu-latest
     environment:
