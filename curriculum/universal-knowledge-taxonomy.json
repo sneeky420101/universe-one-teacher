@@ -1,0 +1,168 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "research-taxonomy-not-ingested",
+  "scope": "Cross-disciplinary, international, multilingual, historical and speculative knowledge discovery",
+  "knowledgeTypes": [
+    "empirical-fact",
+    "scientific-theory",
+    "hypothesis",
+    "historical-interpretation",
+    "cultural-tradition",
+    "religious-belief",
+    "philosophical-position",
+    "fiction",
+    "speculation",
+    "unverified-claim",
+    "unknown"
+  ],
+  "domains": [
+    {
+      "id": "formal-education",
+      "subjects": [
+        "early-childhood",
+        "primary",
+        "secondary",
+        "higher-education",
+        "vocational",
+        "adult-literacy",
+        "special-education",
+        "accessibility"
+      ]
+    },
+    {
+      "id": "stem",
+      "subjects": [
+        "mathematics",
+        "physics",
+        "chemistry",
+        "biology",
+        "earth-science",
+        "astronomy",
+        "space-science",
+        "computer-science",
+        "engineering",
+        "robotics",
+        "statistics"
+      ]
+    },
+    {
+      "id": "humanities",
+      "subjects": [
+        "history",
+        "archaeology",
+        "anthropology",
+        "philosophy",
+        "ethics",
+        "linguistics",
+        "literature",
+        "religious-studies",
+        "cultural-studies"
+      ]
+    },
+    {
+      "id": "society",
+      "subjects": [
+        "geography",
+        "economics",
+        "civics",
+        "law",
+        "political-science",
+        "sociology",
+        "psychology",
+        "media-literacy"
+      ]
+    },
+    {
+      "id": "arts",
+      "subjects": [
+        "visual-art",
+        "music",
+        "dance",
+        "theatre",
+        "film",
+        "design",
+        "architecture",
+        "craft"
+      ]
+    },
+    {
+      "id": "health",
+      "subjects": [
+        "anatomy",
+        "public-health",
+        "nutrition",
+        "physical-education",
+        "mental-health-literacy",
+        "first-aid",
+        "medical-research"
+      ]
+    },
+    {
+      "id": "practical",
+      "subjects": [
+        "agriculture",
+        "environment",
+        "trades",
+        "manufacturing",
+        "business",
+        "finance",
+        "entrepreneurship",
+        "home-skills",
+        "digital-literacy"
+      ]
+    },
+    {
+      "id": "global-and-indigenous",
+      "subjects": [
+        "world-languages",
+        "indigenous-knowledge",
+        "oral-history",
+        "regional-curricula",
+        "local-ecology",
+        "comparative-culture"
+      ]
+    },
+    {
+      "id": "frontiers",
+      "subjects": [
+        "astrobiology",
+        "search-for-extraterrestrial-life",
+        "SETI",
+        "planetary-science",
+        "futures-studies",
+        "speculative-technologies",
+        "science-fiction",
+        "mythology"
+      ]
+    }
+  ],
+  "recordRequirements": [
+    "id",
+    "title",
+    "domain",
+    "subject",
+    "knowledgeType",
+    "language",
+    "region",
+    "sourceUrl",
+    "sourceOrganization",
+    "publicationDate",
+    "retrievedAt",
+    "license",
+    "evidenceStrength",
+    "ageSuitability",
+    "educatorReviewed",
+    "publicationStatus"
+  ],
+  "guardrails": {
+    "separateEvidenceFromBelief": true,
+    "neverPresentAlienContactAsEstablishedFact": true,
+    "neverInventCitations": true,
+    "flagOutdatedOrContestedClaims": true,
+    "avoidHarmfulProceduralInstructions": true,
+    "protectChildrenAndStudentPrivacy": true,
+    "requirePermissionBeforeCopyingFullText": true,
+    "reviewSensitiveHealthAndLegalContent": true
+  },
+  "coverageNote": "A taxonomy and source discovery plan is not a claim that content has been collected, validated, or taught."
+}
