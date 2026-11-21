@@ -15,3 +15,21 @@ android {
 }
 
 dependencies { implementation 'androidx.webkit:webkit:1.12.1' }
+
+/*
+ * Bundle the offline classroom in every local/CI Android build.
+ * Do not rely on a separate CI copy step: otherwise local APKs can be blank.
+ */
+def classroomRoot = rootProject.projectDir.parentFile
+def classroomAssets = ['index.html','quest.html','tutorial.html','privacy.html',
+  'global.html','pathways.html','campus.html','sw.js','manifest.webmanifest','icon.svg']
+tasks.register('stageClassroomAssets', Copy) {
+  from(classroomRoot) {
+    include classroomAssets
+    include 'curriculum/catalog.json'
+  }
+  into layout.projectDirectory.dir('src/main/assets')
+}
+tasks.configureEach { task ->
+  if (task.name == 'preBuild') task.dependsOn('stageClassroomAssets')
+}
