@@ -1,4 +1,4 @@
-// Copyright © 2026 Brandon Hastings — War Bolt Frame Studios.
+// Copyright © 2026 Brandon Hastings — Vault Frame Studios.
 const test=require('node:test');
 const assert=require('node:assert/strict');
 const {spawn}=require('node:child_process');
