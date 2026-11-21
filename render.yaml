@@ -1,4 +1,4 @@
-# War Bolt Frame Studios — staging blueprint. Do not apply without owner release approval.
+# Vault Frame Studios — staging blueprint. Do not apply without owner release approval.
 services:
   - type: web
     name: universe-one-teacher
