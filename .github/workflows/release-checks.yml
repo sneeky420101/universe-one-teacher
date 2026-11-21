@@ -28,7 +28,7 @@ jobs:
           const fs=require('node:fs');
           const m=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));
           if(m.start_url!=='./'||m.scope!=='./'||m.display!=='standalone')throw Error('PWA manifest misconfigured');
-          for(const f of ['index.html','quest.html','tutorial.html','global.html','pathways.html','campus.html','sw.js','icon.svg'])if(!fs.statSync(f).size)throw Error('Empty asset: '+f);
+          for(const f of ['index.html','quest.html','tutorial.html','privacy.html','global.html','pathways.html','campus.html','sw.js','icon.svg'])if(!fs.statSync(f).size)throw Error('Empty asset: '+f);
           const h=fs.readFileSync('index.html','utf8');
-          for(const f of ['tutorial.html','quest.html','manifest.webmanifest'])if(!h.includes(f))throw Error('Missing link: '+f);
+          for(const f of ['tutorial.html','privacy.html','quest.html','manifest.webmanifest'])if(!h.includes(f))throw Error('Missing link: '+f);
           NODE
