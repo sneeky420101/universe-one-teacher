@@ -2,15 +2,15 @@
   "name": "Universe One AI Teacher — VOLTFRAME Studios",
   "short_name": "VOLTFRAME Teacher",
   "description": "Source-linked educational lesson and quiz preview",
-  "id": "/",
-  "start_url": "/",
-  "scope": "/",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#101b33",
   "theme_color": "#101b33",
   "icons": [
     {
-      "src": "/icon.svg",
+      "src": "./icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
