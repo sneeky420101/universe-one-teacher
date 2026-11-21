@@ -164,5 +164,27 @@
     "requirePermissionBeforeCopyingFullText": true,
     "reviewSensitiveHealthAndLegalContent": true
   },
-  "coverageNote": "A taxonomy and source discovery plan is not a claim that content has been collected, validated, or taught."
+  "coverageNote": "A taxonomy and source discovery plan is not a claim that content has been collected, validated, or taught.",
+  "teachingPolicy": {
+    "defaultMode": "verified-facts-only",
+    "firstGroup": "verified-factual-knowledge",
+    "admissionRule": "Only evidence-backed, educator-reviewed, appropriately licensed claims may enter the factual teaching library.",
+    "requiredEvidence": [
+      "claim",
+      "primarySourceUrl",
+      "sourceOrganization",
+      "sourceTitle",
+      "sourcePublicationDateOrVersion",
+      "retrievalDate",
+      "supportingExcerptOrLocator",
+      "evidenceAssessment",
+      "licenseOrUsePermission",
+      "educatorReview"
+    ],
+    "uncertainClaims": "Exclude from verified-facts library; label clearly in separate research mode.",
+    "contradictoryEvidence": "Disclose conflicts and withhold certainty pending review.",
+    "fictionAndSpeculation": "Separate opt-in exploration only; never represented as fact.",
+    "noCitation": "Do not teach as established fact.",
+    "reviewState": "policy-defined-not-yet-enforced-in-app"
+  }
 }
