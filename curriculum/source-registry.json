@@ -1,0 +1,221 @@
+{
+  "schemaVersion": "1.0.0",
+  "purpose": "Curated primary-source discovery queue; URLs are pointers, not imported or verified content.",
+  "policy": {
+    "publicationStatus": "research-only",
+    "neverCopySourceTextWithoutPermission": true,
+    "requireEducatorReview": true,
+    "requireLiveLinkAndLicenseVerification": true,
+    "doNotClaimCurriculumCertification": true,
+    "doNotStoreStudentPII": true
+  },
+  "sources": [
+    {
+      "id": "us-ed-naep",
+      "name": "National Assessment of Educational Progress",
+      "organization": "NCES",
+      "url": "https://www.nationsreportcard.gov/",
+      "subjects": [
+        "mathematics",
+        "reading",
+        "science"
+      ],
+      "region": "United States",
+      "use": "assessment-framework-discovery",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "unesco-education",
+      "name": "UNESCO Education",
+      "organization": "UNESCO",
+      "url": "https://www.unesco.org/en/education",
+      "subjects": [
+        "education",
+        "global-citizenship",
+        "literacy"
+      ],
+      "region": "international",
+      "use": "education-policy-discovery",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "oecd-education",
+      "name": "OECD Education",
+      "organization": "OECD",
+      "url": "https://www.oecd.org/en/topics/education.html",
+      "subjects": [
+        "education",
+        "comparative-assessment"
+      ],
+      "region": "international",
+      "use": "comparative-research",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "usgs-water",
+      "name": "USGS Water Science School",
+      "organization": "US Geological Survey",
+      "url": "https://www.usgs.gov/special-topics/water-science-school",
+      "subjects": [
+        "earth-science",
+        "water-cycle"
+      ],
+      "region": "international",
+      "use": "science-reference",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "nasa-learning",
+      "name": "NASA STEM Engagement",
+      "organization": "NASA",
+      "url": "https://www.nasa.gov/learning-resources/",
+      "subjects": [
+        "astronomy",
+        "engineering",
+        "science"
+      ],
+      "region": "international",
+      "use": "stem-reference",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "nih-medline",
+      "name": "MedlinePlus",
+      "organization": "US National Library of Medicine",
+      "url": "https://medlineplus.gov/",
+      "subjects": [
+        "health",
+        "human-biology"
+      ],
+      "region": "international",
+      "use": "health-literacy-reference",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "smithsonian-learning",
+      "name": "Smithsonian Learning Lab",
+      "organization": "Smithsonian Institution",
+      "url": "https://learninglab.si.edu/",
+      "subjects": [
+        "history",
+        "art",
+        "science",
+        "culture"
+      ],
+      "region": "international",
+      "use": "museum-learning-discovery",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "uk-national-curriculum",
+      "name": "National curriculum in England",
+      "organization": "UK Department for Education",
+      "url": "https://www.gov.uk/national-curriculum",
+      "subjects": [
+        "mathematics",
+        "english",
+        "science",
+        "history",
+        "computing"
+      ],
+      "region": "England",
+      "use": "jurisdiction-curriculum-discovery",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "australia-curriculum",
+      "name": "Australian Curriculum",
+      "organization": "Australian Curriculum Assessment and Reporting Authority",
+      "url": "https://v9.australiancurriculum.edu.au/",
+      "subjects": [
+        "mathematics",
+        "english",
+        "science",
+        "humanities",
+        "arts"
+      ],
+      "region": "Australia",
+      "use": "jurisdiction-curriculum-discovery",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "openstax",
+      "name": "OpenStax",
+      "organization": "Rice University",
+      "url": "https://openstax.org/subjects",
+      "subjects": [
+        "mathematics",
+        "science",
+        "social-sciences",
+        "college"
+      ],
+      "region": "international",
+      "use": "open-textbook-discovery",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "mit-ocw",
+      "name": "MIT OpenCourseWare",
+      "organization": "MIT",
+      "url": "https://ocw.mit.edu/",
+      "subjects": [
+        "engineering",
+        "mathematics",
+        "computer-science",
+        "humanities"
+      ],
+      "region": "international",
+      "use": "higher-education-discovery",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    },
+    {
+      "id": "w3c-wai",
+      "name": "Web Accessibility Initiative",
+      "organization": "W3C",
+      "url": "https://www.w3.org/WAI/",
+      "subjects": [
+        "accessibility",
+        "inclusive-learning"
+      ],
+      "region": "international",
+      "use": "accessible-education-design",
+      "linkVerified": false,
+      "licenseVerified": false,
+      "educatorReviewed": false,
+      "contentImported": false
+    }
+  ]
+}
