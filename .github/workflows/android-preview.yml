@@ -1,0 +1,31 @@
+name: Build unsigned Android preview
+on:
+  workflow_dispatch:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  android-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - name: Run Node tests
+        run: npm test
+      - name: Bundle offline lesson assets
+        run: |
+          mkdir -p android/app/src/main/assets
+          cp index.html quest.html tutorial.html privacy.html global.html pathways.html campus.html sw.js manifest.webmanifest icon.svg android/app/src/main/assets/
+      - name: Build debug APK (not Play release)
+        working-directory: android
+        run: gradle --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: voltframe-teacher-unsigned-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
