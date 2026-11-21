@@ -8,10 +8,10 @@ An early educational browser application with eight source-linked lessons and pr
 - Read original educational sources and complete quizzes.
 - Ask questions against a limited set of existing lessons (keyword matching, **not** a generative AI tutor).
 - Store quiz completion locally in the current browser.
-- View a 2D Meta Quest classroom **concept preview**.
+- View a 2D classroom preview and open an **experimental immersive WebXR Meta Quest lab** with three sample stations, WebGL rendering, controller-trigger station switching and a desktop fallback.
 
 ## Limitations
-The grade selector currently changes the classroom label only. The eight lessons are **not** differentiated, mapped to grade standards, or sufficient for all-grade curricula. The classroom preview is not an immersive WebXR scene and does not connect to Meta Quest devices, controllers, or other students. No school accounts or teacher management features exist.
+The grade selector currently changes the classroom label only. The eight lessons are **not** differentiated, mapped to grade standards, or sufficient for all-grade curricula. The main-page classroom preview is 2D. The separate `quest.html` lab requests immersive WebXR on supported Quest browsers, but has not been tested on physical headsets, and does not provide multiplayer or a production-grade VR school. No school accounts or teacher management features exist.
 
 ## Engineering backlog
 1. Create structured curriculum schema with grade, subject, standards, citations, licensing, reading level and human-review status.
@@ -47,3 +47,22 @@ No permission to reproduce, redistribute, sublicense, sell, or create derivative
 
 ## International curriculum ingestion (development)
 The `curriculum/catalog.json` file defines a provenance-first schema. All existing records are explicitly marked as draft samples, not certified standards mappings. `tests/curriculum.test.js` enforces these safeguards. Before adding official standards: identify the responsible jurisdiction and publication/version, check reuse permissions, record primary-source citations and translation provenance, and obtain educator review. Do not ingest student personal information or copyrighted textbooks without authorization.
+
+## Quick start — simplest setup
+1. Open the deployed HTTPS website in Chrome on Android or Meta Quest Browser on a Quest headset.
+2. Choose a learning level and subject, then select a lesson and complete a quiz. Learning-level selection currently changes the label only.
+3. On Android Chrome, use the browser menu **Install app** or **Add to Home screen** if offered. Installation requires a working HTTPS deployment and compatible browser.
+4. For Quest, select **Try experimental Meta Quest VR classroom**, then **Enter Meta Quest VR** if the headset/browser supports immersive WebXR. Use the controller trigger to change stations; use **Exit VR** to leave. Do not use without adult/educator supervision.
+5. If VR is unavailable, use the flat-screen lesson and classroom previews instead. No account is needed and quiz progress is local to your browser.
+
+## Google Play readiness checklist
+- [ ] Verify GitHub Pages or other HTTPS deployment and all asset URLs.
+- [ ] Run automated tests and browser accessibility checks on mobile and desktop.
+- [ ] Test installation, offline behavior, and cache updates on real Android devices.
+- [ ] Test Quest WebXR entry, controller interaction, exit/re-entry and comfort on real headsets.
+- [ ] Prepare Android app package, versioning, icon variants, signed AAB and Play Integrity/security review.
+- [ ] Complete child-directed app privacy, data-safety declarations, content rating, target API and Families policy review.
+- [ ] Configure Google Play developer account, store listing, screenshots and any required closed testing.
+- [ ] Confirm release approval after all blocking tests pass.
+
+This checklist is not evidence that the application has passed store review. No signed Android App Bundle is included.
