@@ -20,5 +20,5 @@ const catalogResponse=await get(base+'/curriculum/catalog.json');assert.equal(ca
 assert.equal((await get(base+'/health')).body,'ok');
 assert.equal((await get(base+'/missing')).status,404);
 assert.equal((await get(base+'/%2e%2e/secret')).status,404);
-}finally{child.kill();await once(child,'exit').catch(()=>{})}
+}finally{if(child.exitCode===null && child.signalCode===null){const exited=once(child,'exit');child.kill();await exited.catch(()=>{})}}
 });
