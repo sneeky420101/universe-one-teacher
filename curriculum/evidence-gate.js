@@ -7,10 +7,10 @@ function evaluate(record){
  for(const key of REQUIRED){const v=record[key];if(v===undefined||v===null||typeof v==='string'&&!v.trim())reasons.push('missing-'+key)}
  if(typeof record.claim!=='string'||!record.claim.trim())reasons.push('invalid-claim');
  try{const url=new URL(record.primarySourceUrl);if(url.protocol!=='https:'||!url.hostname.includes('.'))reasons.push('invalid-primary-source-url')}catch{reasons.push('invalid-primary-source-url')}
- if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(record.retrievalDate||'')||Number.isNaN(Date.parse(record.retrievalDate)))reasons.push('invalid-retrieval-date');
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(record.retrievalDate||'')||Number.isNaN(Date.parse(record.retrievalDate)))reasons.push('invalid-retrieval-date');
  if(record.evidenceAssessment!=='supported')reasons.push('evidence-not-supported');
  if(record.licenseOrUsePermission!=='approved')reasons.push('reuse-not-approved');
- if(record.educatorReview?.approved!==true||typeof record.educatorReview?.reviewerId!=='string'||!record.educatorReview.reviewerId.trim()||!/^\\d{4}-\\d{2}-\\d{2}$/.test(record.educatorReview?.reviewedAt||''))reasons.push('educator-review-required');
+ if(record.educatorReview?.approved!==true||typeof record.educatorReview?.reviewerId!=='string'||!record.educatorReview.reviewerId.trim()||!/^\d{4}-\d{2}-\d{2}$/.test(record.educatorReview?.reviewedAt||''))reasons.push('educator-review-required');
  if(record.sourceVerified!==true)reasons.push('source-not-independently-verified');
  if(record.publicationStatus!=='approved')reasons.push('publication-not-approved');
  if(record.knowledgeType!=='empirical-fact'&&record.knowledgeType!=='scientific-theory')reasons.push('not-factual-knowledge');
