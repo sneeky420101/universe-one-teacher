@@ -1,0 +1,39 @@
+{
+  "note": "Fill verified evidence only; never mark a gate verified from source code alone.",
+  "automatedTests": {
+    "verified": false,
+    "reference": ""
+  },
+  "httpsDeployment": {
+    "verified": false,
+    "reference": ""
+  },
+  "androidDevice": {
+    "verified": false,
+    "reference": ""
+  },
+  "questDevice": {
+    "verified": false,
+    "reference": ""
+  },
+  "privacyReview": {
+    "verified": false,
+    "reference": ""
+  },
+  "storeContact": {
+    "verified": false,
+    "reference": ""
+  },
+  "androidBundle": {
+    "verified": false,
+    "reference": ""
+  },
+  "playAccount": {
+    "verified": false,
+    "reference": ""
+  },
+  "ownerApproval": {
+    "verified": false,
+    "reference": ""
+  }
+}
