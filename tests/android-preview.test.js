@@ -38,3 +38,11 @@ test('Android WebView blocks untrusted URL schemes and restricts local asset ori
  assert.match(activity,/Block intent:, file:, content:, javascript:/);
  assert.match(activity,/ActivityNotFoundException/);
 });
+
+test('Android preview checks packaged APK contents before artifact upload',()=>{
+ const workflow=read('.github/workflows/android-preview.yml');
+ assert.match(workflow,/npm run security:audit/);
+ assert.match(workflow,/zipfile\.ZipFile/);
+ for(const name of ['assets/index.html','assets/quest.html','assets/privacy.html','assets/curriculum/catalog.json'])assert.ok(workflow.includes(name),name);
+ assert.ok(workflow.indexOf('Verify APK contains offline classroom')<workflow.indexOf('actions/upload-artifact@v4'));
+});
