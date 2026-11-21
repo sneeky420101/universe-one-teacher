@@ -1,7 +1,6 @@
 name: Build unsigned Android preview
 on:
   workflow_dispatch:
-  pull_request:
 permissions:
   contents: read
 jobs:
@@ -32,8 +31,10 @@ jobs:
       - name: Build debug APK (not Play release)
         working-directory: android
         run: gradle --no-daemon assembleDebug
+      # Debug APKs are sensitive preview artifacts; retain briefly and do not build on untrusted PRs.
       - uses: actions/upload-artifact@v4
         with:
           name: voltframe-teacher-unsigned-debug-apk
+          retention-days: 1
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
