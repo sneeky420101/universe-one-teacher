@@ -19,6 +19,8 @@ jobs:
         with:
           node-version: '22'
       - run: npm test
+      - name: Run HTTP smoke tests
+        run: node --test tests/http-smoke.test.js
       - name: Check required PWA files
         run: |
           test -s index.html
@@ -35,8 +37,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: Package only public website files
+        run: |
+          mkdir -p public
+          cp index.html quest.html global.html pathways.html campus.html sw.js manifest.webmanifest icon.svg public/
+          touch public/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: public
       - id: deployment
         uses: actions/deploy-pages@v4
