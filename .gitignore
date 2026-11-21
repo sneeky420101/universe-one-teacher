@@ -1,0 +1,21 @@
+# Never commit credentials, local signing material or student records
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+google-services.json
+service-account*.json
+*credentials*.json
+*secret*.json
+local.properties
+.gradle/
+**/build/
+node_modules/
+.DS_Store
+student-data/
+private/
