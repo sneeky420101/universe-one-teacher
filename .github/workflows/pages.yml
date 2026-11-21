@@ -40,7 +40,7 @@ jobs:
       - name: Package only public website files
         run: |
           mkdir -p public
-          cp index.html quest.html tutorial.html global.html pathways.html campus.html sw.js manifest.webmanifest icon.svg public/
+          cp index.html quest.html tutorial.html privacy.html global.html pathways.html campus.html sw.js manifest.webmanifest icon.svg public/
           touch public/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
