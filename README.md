@@ -27,3 +27,20 @@ Open `index.html` in a modern browser. No build step is required.
 
 ## Release
 Pre-launch hold: do not publicly publish, submit to an app store, or enable paid accounts without explicit owner authorization and production readiness checks.
+
+## Ownership and provenance
+Copyright © 2026 Brandon Hastings. All rights reserved.
+
+Project attribution: **War Bolt Frame Studios**, owned by **Brandon Hastings**.
+
+The owner asserts rights only in original material they own or control. External educational links, third-party trademarks, frameworks, dependencies, and licensed content retain their respective rights. The project's Git commit history provides revision timestamps and authorship records, but does not establish legal registration or independently verify originality.
+
+No permission to reproduce, redistribute, sublicense, sell, or create derivative works from the original proprietary project materials is granted by this notice. Rights questions and any formal copyright or trademark registration require separate legal review.
+
+### Release safeguards
+- Maintain pre-launch hold; do not publish, deploy, or submit for store review without owner approval.
+- Review repository visibility before adding confidential source, student data, keys or credentials.
+- Never commit API keys, student identifiers, passwords or proprietary customer records.
+- Before launch: configure HTTP security headers, dependency and secret scanning, CSP testing, signed release artifacts, backup/restore testing and access controls.
+- Before launch: obtain legal/privacy review for child-directed education and classroom data.
+- Do not imply that watermarking or code obfuscation prevents copying.
