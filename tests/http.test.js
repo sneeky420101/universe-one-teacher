@@ -16,6 +16,7 @@ for(let attempt=0;attempt<40;attempt++){if(child.exitCode!==null)throw Error('Se
 assert.ok(ready,'server did not start');
 const base='http://127.0.0.1:'+port;
 for(const route of ['/','/index.html','/quest.html','/global.html','/pathways.html']){const r=await get(base+route);assert.equal(r.status,200);assert.match(r.headers['content-type'],/text\/html/);assert.match(r.headers['content-security-policy'],/default-src 'none'/);assert.equal(r.headers['x-content-type-options'],'nosniff');assert.match(r.body,/Brandon Hastings/)}
+const catalogResponse=await get(base+'/curriculum/catalog.json');assert.equal(catalogResponse.status,200);assert.match(catalogResponse.headers['content-type'],/application\/json/);const catalog=JSON.parse(catalogResponse.body);assert.ok(Array.isArray(catalog.records));assert.ok(catalog.records.every(r=>r.publicationStatus==='draft'&&!r.verifiedAgainstOfficialCurriculum));
 assert.equal((await get(base+'/health')).body,'ok');
 assert.equal((await get(base+'/missing')).status,404);
 assert.equal((await get(base+'/%2e%2e/secret')).status,404);
