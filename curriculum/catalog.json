@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "project": "Universe One AI Teacher",
+  "owner": "© 2026 Brandon Hastings — VOLTFRAME Studios",
+  "status": "prototype-not-certified",
+  "policy": {
+    "neverPresentSampleThemesAsNationalStandards": true,
+    "requireSourceUrlForVerifiedStandard": true,
+    "requireEducatorReviewBeforePublishing": true,
+    "retainSourceLicensingMetadata": true,
+    "doNotStoreStudentPII": true
+  },
+  "records": [
+    {
+      "id": "us-math-grade-5-demo",
+      "country": "US",
+      "jurisdiction": "illustrative-only",
+      "stage": "Grade 5",
+      "subject": "Mathematics",
+      "topic": "Fractions",
+      "language": "en",
+      "standardCode": null,
+      "standardText": null,
+      "sampleObjective": "Explain why two halves equal one whole.",
+      "sourceUrl": "https://www.khanacademy.org/math/arithmetic/fraction-arithmetic",
+      "license": "external-link-only",
+      "verifiedAgainstOfficialCurriculum": false,
+      "educatorReviewed": false,
+      "publicationStatus": "draft"
+    },
+    {
+      "id": "global-water-cycle-demo",
+      "country": "GLOBAL",
+      "jurisdiction": "cross-national-example",
+      "stage": "Primary",
+      "subject": "Science",
+      "topic": "Water cycle",
+      "language": "en",
+      "standardCode": null,
+      "standardText": null,
+      "sampleObjective": "Identify evaporation, condensation and precipitation.",
+      "sourceUrl": "https://www.usgs.gov/special-topics/water-science-school/science/water-cycle",
+      "license": "external-link-only",
+      "verifiedAgainstOfficialCurriculum": false,
+      "educatorReviewed": false,
+      "publicationStatus": "draft"
+    }
+  ]
+}
