@@ -15,7 +15,7 @@ let ready=false;
 for(let attempt=0;attempt<40;attempt++){if(child.exitCode!==null)throw Error('Server exited early');try{const r=await get('http://127.0.0.1:'+port+'/health');if(r.status===200){ready=true;break}}catch{}await new Promise(r=>setTimeout(r,100))}
 assert.ok(ready,'server did not start');
 const base='http://127.0.0.1:'+port;
-for(const route of ['/','/index.html','/quest.html','/global.html']){const r=await get(base+route);assert.equal(r.status,200);assert.match(r.headers['content-type'],/text\/html/);assert.match(r.headers['content-security-policy'],/default-src 'none'/);assert.equal(r.headers['x-content-type-options'],'nosniff');assert.match(r.body,/Brandon Hastings/)}
+for(const route of ['/','/index.html','/quest.html','/global.html','/pathways.html']){const r=await get(base+route);assert.equal(r.status,200);assert.match(r.headers['content-type'],/text\/html/);assert.match(r.headers['content-security-policy'],/default-src 'none'/);assert.equal(r.headers['x-content-type-options'],'nosniff');assert.match(r.body,/Brandon Hastings/)}
 assert.equal((await get(base+'/health')).body,'ok');
 assert.equal((await get(base+'/missing')).status,404);
 assert.equal((await get(base+'/%2e%2e/secret')).status,404);
