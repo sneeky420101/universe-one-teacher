@@ -13,3 +13,13 @@ test('universal knowledge taxonomy spans disciplines and distinguishes evidence'
  assert.equal(taxonomy.guardrails.protectChildrenAndStudentPrivacy,true);
  assert.equal(taxonomy.guardrails.neverInventCitations,true);
 });
+
+test('factual teaching requires traceable evidence and human review',()=>{
+ const p=taxonomy.teachingPolicy;
+ assert.equal(p.defaultMode,'verified-facts-only');
+ assert.equal(p.firstGroup,'verified-factual-knowledge');
+ for(const field of ['claim','primarySourceUrl','sourceOrganization','supportingExcerptOrLocator','evidenceAssessment','educatorReview'])assert.ok(p.requiredEvidence.includes(field),field);
+ assert.match(p.noCitation,/Do not teach as established fact/);
+ assert.match(p.fictionAndSpeculation,/never represented as fact/);
+ assert.equal(p.reviewState,'policy-defined-not-yet-enforced-in-app');
+});
