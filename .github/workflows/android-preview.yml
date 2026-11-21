@@ -16,12 +16,19 @@ jobs:
           java-version: '17'
       - uses: android-actions/setup-android@v3
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Run Node tests
         run: npm test
       - name: Bundle offline lesson assets
         run: |
           mkdir -p android/app/src/main/assets
           cp index.html quest.html tutorial.html privacy.html global.html pathways.html campus.html sw.js manifest.webmanifest icon.svg android/app/src/main/assets/
+          mkdir -p android/app/src/main/assets/curriculum
+          cp curriculum/catalog.json android/app/src/main/assets/curriculum/catalog.json
       - name: Build debug APK (not Play release)
         working-directory: android
         run: gradle --no-daemon assembleDebug
