@@ -44,3 +44,6 @@ No permission to reproduce, redistribute, sublicense, sell, or create derivative
 - Before launch: configure HTTP security headers, dependency and secret scanning, CSP testing, signed release artifacts, backup/restore testing and access controls.
 - Before launch: obtain legal/privacy review for child-directed education and classroom data.
 - Do not imply that watermarking or code obfuscation prevents copying.
+
+## International curriculum ingestion (development)
+The `curriculum/catalog.json` file defines a provenance-first schema. All existing records are explicitly marked as draft samples, not certified standards mappings. `tests/curriculum.test.js` enforces these safeguards. Before adding official standards: identify the responsible jurisdiction and publication/version, check reuse permissions, record primary-source citations and translation provenance, and obtain educator review. Do not ingest student personal information or copyrighted textbooks without authorization.
