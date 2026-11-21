@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --test tests/*.test.js",
-    "release:audit": "node scripts/release-audit.js"
+    "release:audit": "node scripts/release-audit.js",
+    "security:audit": "node scripts/security-audit.js"
   },
   "engines": {
     "node": ">=20"
