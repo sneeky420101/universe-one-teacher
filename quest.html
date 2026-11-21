@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="author" content="War Bolt Frame Studios"><meta name="copyright" content="Copyright © 2026 Brandon Hastings. All rights reserved.">
+<title>Universe One | Meta Quest WebXR Lab</title>
+<style>body{font:16px system-ui;background:#10182e;color:#f3f7ff;max-width:900px;margin:auto;padding:22px}button,select{font:inherit;padding:12px;margin:5px;background:#274c75;color:white;border:1px solid #8ab9ec;border-radius:10px}button:focus-visible,select:focus-visible{outline:3px solid #ffdb74}canvas{width:100%;max-height:60vh;background:#0a142a;border-radius:12px}p{line-height:1.5}.notice{background:#223653;padding:16px;border-radius:12px}footer{margin-top:30px;border-top:1px solid #52688a;padding-top:16px;color:#c8d3e7}</style></head><body>
+<h1>🌌 Universe One — Meta Quest Classroom Lab</h1>
+<p class="notice">Experimental WebXR classroom. Intended for Meta Quest Browser over HTTPS. No student login, microphone, camera, multiplayer, or personal-data collection. Teacher supervision required. Do not use as a production classroom.</p>
+<label for="level">Learning level</label><select id="level"></select>
+<label for="topic">Learning station</label><select id="topic"><option value="space">Solar system</option><option value="math">Mathematics</option><option value="biology">Living systems</option></select>
+<p><button id="enter" disabled>Checking VR support…</button><button id="exit" disabled>Exit VR</button><a href="index.html" style="color:#a9d8ff">Back to classroom</a></p>
+<p id="status" role="status">Checking headset support.</p>
+<canvas id="scene" width="900" height="520" aria-label="Preview of three dimensional classroom"></canvas>
+<h2>Classroom station</h2><p id="lesson" aria-live="polite"></p>
+<p>Use the Quest controller trigger to switch learning stations. Look around naturally in VR. For seated comfort, the scene is positioned in front of the learner and does not move the camera.</p>
+<footer>© 2026 Brandon Hastings · War Bolt Frame Studios · All rights reserved. External educational facts remain subject to source review.</footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const levels=['Pre-K','Kindergarten',...Array.from({length:12},(_,i)=>'Grade '+(i+1)),'College','Adult / GED'];
+levels.forEach(v=>{const e=document.createElement('option');e.value=v;e.textContent=v;$('level').append(e)});
+$('level').value='Grade 5';
+const topics=['space','math','biology'];
+const facts={space:'Earth is the third planet from the Sun. Source: NASA Science, science.nasa.gov/earth/facts/',math:'One kilometer equals 1,000 meters. Source: NIST, nist.gov/pml/owm',biology:'Living systems interact with their environment. Educator review recommended.'};
+let gl,program,buffer,session,refSpace,baseLayer,poseReady=false;
+function updateLesson(){$('lesson').textContent=$('level').value+' • '+facts[$('topic').value]+' This station is a shared sample, not a grade-specific curriculum.'}
+$('topic').onchange=updateLesson;$('level').onchange=updateLesson;updateLesson();
+const vert='attribute vec3 p;uniform mat4 mvp;uniform float pointSize;void main(){gl_Position=mvp*vec4(p,1.0);gl_PointSize=pointSize;}';
+const frag='precision mediump float;uniform vec4 color;void main(){gl_FragColor=color;}';
+function shader(type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s}
+function setup(){gl=$('scene').getContext('webgl',{xrCompatible:true,antialias:true,alpha:false});if(!gl)throw Error('WebGL unavailable');program=gl.createProgram();gl.attachShader(program,shader(gl.VERTEX_SHADER,vert));gl.attachShader(program,shader(gl.FRAGMENT_SHADER,frag));gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error('Shader link failed');gl.useProgram(program);buffer=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buffer);const a=gl.getAttribLocation(program,'p');gl.enableVertexAttribArray(a);gl.vertexAttribPointer(a,3,gl.FLOAT,false,0,0);gl.enable(gl.DEPTH_TEST)}
+function multiply(a,b){const o=new Float32Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)for(let k=0;k<4;k++)o[c*4+r]+=a[k*4+r]*b[c*4+k];return o}
+function translation(x,y,z){const a=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,x,y,z,1]);return a}
+function draw(vp,offset,scale,color){const vertices=new Float32Array([
+-1,-1,-1,1,-1,-1,1,1,-1,-1,-1,-1,1,1,-1,-1,1,-1,
+-1,-1,1,1,-1,1,1,1,1,-1,-1,1,1,1,1,-1,1,1,
+-1,-1,-1,-1,1,-1,-1,1,1,-1,-1,-1,-1,1,1,-1,-1,1,
+1,-1,-1,1,1,-1,1,1,1,1,-1,-1,1,1,1,1,-1,1,
+-1,1,-1,1,1,-1,1,1,1,-1,1,-1,1,1,1,-1,1,1,
+-1,-1,-1,1,-1,-1,1,-1,1,-1,-1,-1,1,-1,1,-1,-1,1]);
+for(let i=0;i<vertices.length;i+=3){vertices[i]=vertices[i]*scale[0];vertices[i+1]=vertices[i+1]*scale[1];vertices[i+2]=vertices[i+2]*scale[2]}
+gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.DYNAMIC_DRAW);
+gl.uniformMatrix4fv(gl.getUniformLocation(program,'mvp'),false,multiply(vp,translation(...offset)));
+gl.uniform4fv(gl.getUniformLocation(program,'color'),color);
+gl.drawArrays(gl.TRIANGLES,0,vertices.length/3)}
+function renderScene(vp){gl.clearColor(.025,.05,.12,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+draw(vp,[0,-.6,-2.8],[1.7,.06,.65],[.16,.32,.45,1]);
+draw(vp,[0,.55,-3.3],[1.45,.8,.06],[.12,.27,.48,1]);
+const t=topics.indexOf($('topic').value);
+draw(vp,[0,0,-2.6],[.3,.3,.3],t===0?[.25,.63,.94,1]:t===1?[.98,.69,.21,1]:[.35,.85,.5,1]);
+draw(vp,[-.9,0,-2.9],[.17,.17,.17],[.95,.72,.3,1]);
+draw(vp,[.9,0,-2.9],[.17,.17,.17],[.82,.45,.88,1]);}
+function desktopPreview(){if(!gl)return;gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,$('scene').width,$('scene').height);const p=new Float32Array([1.2,0,0,0,0,1.8,0,0,0,0,-1.02,-1,0,0,-.2,0]);renderScene(p)}
+async function start(){try{await gl.makeXRCompatible();session=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor','bounded-floor']});session.addEventListener('end',()=>{session=null;refSpace=null;$('exit').disabled=true;$('enter').disabled=false;$('status').textContent='VR session ended.';desktopPreview()});session.addEventListener('select',()=>{$('topic').selectedIndex=($('topic').selectedIndex+1)%topics.length;updateLesson()});baseLayer=new XRWebGLLayer(session,gl);session.updateRenderState({baseLayer});try{refSpace=await session.requestReferenceSpace('local-floor')}catch{refSpace=await session.requestReferenceSpace('local')};$('enter').disabled=true;$('exit').disabled=false;$('status').textContent='VR classroom active. Press controller trigger to change station.';session.requestAnimationFrame(frame)}catch(e){$('status').textContent='VR could not start: '+e.message;$('enter').disabled=false;if(session)await session.end().catch(()=>{})}}
+function frame(time,xrFrame){if(!session)return;session.requestAnimationFrame(frame);const pose=xrFrame.getViewerPose(refSpace);if(!pose)return;gl.bindFramebuffer(gl.FRAMEBUFFER,baseLayer.framebuffer);for(const view of pose.views){const viewport=baseLayer.getViewport(view);gl.viewport(viewport.x,viewport.y,viewport.width,viewport.height);renderScene(multiply(view.projectionMatrix,view.transform.inverse.matrix))}}
+$('enter').onclick=start;$('exit').onclick=()=>session?.end();
+try{setup();desktopPreview();if(!window.isSecureContext){$('status').textContent='HTTPS is required for immersive WebXR.'}else if(!navigator.xr){$('status').textContent='WebXR not available here. Open this page in a supported Meta Quest Browser.'}else{navigator.xr.isSessionSupported('immersive-vr').then(ok=>{$('enter').disabled=!ok;$('enter').textContent=ok?'Enter Meta Quest VR':'VR not supported';$('status').textContent=ok?'Ready to request an immersive VR session.':'Immersive VR is not supported in this browser.'}).catch(e=>$('status').textContent=e.message)}}catch(e){$('status').textContent='Preview failed: '+e.message}
+</script></body></html>
