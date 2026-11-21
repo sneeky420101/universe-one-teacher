@@ -1,4 +1,4 @@
-// Copyright © 2026 Brandon Hastings — Vault Frame Studios. All rights reserved.
+// Copyright © 2026 Brandon Hastings — VOLTFRAME Studios. All rights reserved.
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const root=__dirname;const port=Number(process.env.PORT||3000);
 const routes={'/':'index.html','/index.html':'index.html','/quest.html':'quest.html','/health':'health'};
