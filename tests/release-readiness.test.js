@@ -17,3 +17,5 @@ test('quick-start tutorial is shipped with offline shell and server',()=>{assert
 test('privacy notice is linked and included in all release targets',()=>{assert.match(read('index.html'),/privacy\.html/);assert.match(read('sw.js'),/\.\/privacy\.html/);assert.match(read('server.js'),/\/privacy\.html/);assert.match(read('.github/workflows/pages.yml'),/privacy\.html/);assert.match(read('privacy.html'),/local storage/)});
 
 test('public deployment remains disabled during owner prelaunch hold',()=>{const workflow=read('.github/workflows/pages.yml');assert.match(workflow,/deploy:\s*\n(?:[^\n]*\n)*?\s+if:\s*\$\{\{ false \}\}/);});
+
+test('release gate fails closed until verified evidence is provided',()=>{const {spawnSync}=require('node:child_process');const result=spawnSync(process.execPath,['scripts/release-audit.js'],{cwd:root,encoding:'utf8'});assert.equal(result.status,1);assert.match(result.stdout,/NOT READY/);assert.match(result.stdout,/androidBundle/);assert.match(result.stdout,/questDevice/)});
