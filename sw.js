@@ -1,6 +1,6 @@
 // VOLTFRAME Studios — offline shell only; no student records or quiz answers cached.
-const CACHE='voltframe-teacher-preview-v2';
-const SHELL=['./','./index.html','./quest.html','./global.html','./pathways.html','./campus.html','./manifest.webmanifest','./icon.svg'];
+const CACHE='voltframe-teacher-preview-v3';
+const SHELL=['./','./index.html','./quest.html','./tutorial.html','./global.html','./pathways.html','./campus.html','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
 });
