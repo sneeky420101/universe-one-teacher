@@ -1,0 +1,10 @@
+# War Bolt Frame Studios — staging blueprint. Do not apply without owner release approval.
+services:
+  - type: web
+    name: universe-one-teacher
+    runtime: node
+    plan: free
+    buildCommand: npm install --ignore-scripts
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeployTrigger: off
