@@ -20,11 +20,29 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Audit tracked files for credentials
+        run: npm run security:audit
       - name: Run Node tests
         run: npm test
       - name: Build debug APK (not Play release)
         working-directory: android
         run: gradle --no-daemon assembleDebug
+      - name: Verify APK contains offline classroom and curriculum
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile
+          apks=list(Path('android/app/build/outputs/apk/debug').glob('*.apk'))
+          if len(apks)!=1: raise SystemExit('Expected exactly one debug APK')
+          with zipfile.ZipFile(apks[0]) as apk:
+              names=set(apk.namelist())
+              required={'assets/index.html','assets/quest.html','assets/privacy.html','assets/curriculum/catalog.json'}
+              missing=required-names
+              if missing: raise SystemExit('APK missing offline assets: '+', '.join(sorted(missing)))
+              for name in required:
+                  if not apk.read(name): raise SystemExit('APK asset empty: '+name)
+          print('Offline classroom assets verified in APK')
+          PY
       # Debug APKs are sensitive preview artifacts; retain briefly and do not build on untrusted PRs.
       - uses: actions/upload-artifact@v4
         with:
