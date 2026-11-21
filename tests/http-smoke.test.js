@@ -13,7 +13,7 @@ test('local server serves app, Quest, manifest, service worker and health secure
     let ready=false;
     for(let i=0;i<60;i++){if(child.exitCode!==null)throw Error('server exited unexpectedly');try{const r=await fetch('http://127.0.0.1:'+port+'/health');if(r.ok){ready=true;break}}catch{}await delay(100)}
     assert.ok(ready,'server did not start');
-    for(const [route,type] of [['/','text/html'],['/quest.html','text/html'],['/manifest.webmanifest','application/manifest+json'],['/sw.js','text/javascript'],['/icon.svg','image/svg+xml'],['/curriculum/catalog.json','application/json']]){
+    for(const [route,type] of [['/','text/html'],['/quest.html','text/html'],['/tutorial.html','text/html'],['/manifest.webmanifest','application/manifest+json'],['/sw.js','text/javascript'],['/icon.svg','image/svg+xml'],['/curriculum/catalog.json','application/json']]){
       const res=await fetch('http://127.0.0.1:'+port+route);
       assert.equal(res.status,200,route);
       assert.ok(res.headers.get('content-type')?.includes(type),route);
