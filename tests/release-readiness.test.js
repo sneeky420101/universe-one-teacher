@@ -15,3 +15,5 @@ test('GitHub Pages pipeline runs checks before deployment',()=>{const y=read('.g
 test('quick-start tutorial is shipped with offline shell and server',()=>{assert.match(read('tutorial.html'),/Start learning in three steps/);assert.match(read('sw.js'),/\.\/tutorial\.html/);assert.match(read('server.js'),/\/tutorial\.html/);assert.match(read('.github/workflows/pages.yml'),/tutorial\.html/)});
 
 test('privacy notice is linked and included in all release targets',()=>{assert.match(read('index.html'),/privacy\.html/);assert.match(read('sw.js'),/\.\/privacy\.html/);assert.match(read('server.js'),/\/privacy\.html/);assert.match(read('.github/workflows/pages.yml'),/privacy\.html/);assert.match(read('privacy.html'),/local storage/)});
+
+test('public deployment remains disabled during owner prelaunch hold',()=>{const workflow=read('.github/workflows/pages.yml');assert.match(workflow,/deploy:\s*\n(?:[^\n]*\n)*?\s+if:\s*\$\{\{ false \}\}/);});
