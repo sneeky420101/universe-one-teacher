@@ -20,6 +20,8 @@ jobs:
           node --check server.js
           node --check sw.js
           for file in tests/*.test.js; do node --check "$file"; done
+      - name: Audit tracked source for sensitive files and credentials
+        run: npm run security:audit
       - name: Run application and HTTP smoke tests
         run: npm test
       - name: Verify static release assets
