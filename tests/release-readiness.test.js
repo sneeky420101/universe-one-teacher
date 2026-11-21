@@ -21,3 +21,6 @@ test('public deployment remains disabled during owner prelaunch hold',()=>{const
 test('release gate fails closed until verified evidence is provided',()=>{const {spawnSync}=require('node:child_process');const result=spawnSync(process.execPath,['scripts/release-audit.js'],{cwd:root,encoding:'utf8'});assert.equal(result.status,1);assert.match(result.stdout,/NOT READY/);assert.match(result.stdout,/androidBundle/);assert.match(result.stdout,/questDevice/)});
 
 test('learners can clear local quiz progress with confirmation',()=>{const h=read('index.html');assert.match(h,/id="resetProgress"/);assert.match(h,/window\.confirm\(/);assert.match(h,/localStorage\.removeItem\('universe-one-progress'\)/);assert.match(h,/id="progress"[^>]*aria-live="polite"/)});
+
+test('privacy headers and request-method restrictions remain enabled',()=>{const server=read('server.js');assert.match(server,/Referrer-Policy','no-referrer'/);assert.match(server,/Cross-Origin-Opener-Policy/);assert.match(server,/Method not allowed/);assert.match(server,/req\.method!=='GET'&&req\.method!=='HEAD'/)});
+test('preview APK builds are manual-only with minimal retention',()=>{const y=read('.github/workflows/android-preview.yml');assert.match(y,/workflow_dispatch:/);assert.doesNotMatch(y,/pull_request:/);assert.match(y,/retention-days: 1/)});
