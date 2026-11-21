@@ -19,3 +19,5 @@ test('privacy notice is linked and included in all release targets',()=>{assert.
 test('public deployment remains disabled during owner prelaunch hold',()=>{const workflow=read('.github/workflows/pages.yml');assert.match(workflow,/deploy:\s*\n(?:[^\n]*\n)*?\s+if:\s*\$\{\{ false \}\}/);});
 
 test('release gate fails closed until verified evidence is provided',()=>{const {spawnSync}=require('node:child_process');const result=spawnSync(process.execPath,['scripts/release-audit.js'],{cwd:root,encoding:'utf8'});assert.equal(result.status,1);assert.match(result.stdout,/NOT READY/);assert.match(result.stdout,/androidBundle/);assert.match(result.stdout,/questDevice/)});
+
+test('learners can clear local quiz progress with confirmation',()=>{const h=read('index.html');assert.match(h,/id="resetProgress"/);assert.match(h,/window\.confirm\(/);assert.match(h,/localStorage\.removeItem\('universe-one-progress'\)/);assert.match(h,/id="progress"[^>]*aria-live="polite"/)});
