@@ -31,7 +31,7 @@ Pre-launch hold: do not publicly publish, submit to an app store, or enable paid
 ## Ownership and provenance
 Copyright © 2026 Brandon Hastings. All rights reserved.
 
-Project attribution: **War Bolt Frame Studios**, owned by **Brandon Hastings**.
+Project attribution: **Vault Frame Studios**, owned by **Brandon Hastings**.
 
 The owner asserts rights only in original material they own or control. External educational links, third-party trademarks, frameworks, dependencies, and licensed content retain their respective rights. The project's Git commit history provides revision timestamps and authorship records, but does not establish legal registration or independently verify originality.
 
