@@ -1,0 +1,3 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('experiment outcome is represented visually and accessibly',()=>{for(const id of ['experimentVisual','experimentBar','experimentValueText'])assert.ok(html.includes('id="'+id+'"'),id);assert.match(html,/Experiment result:/);assert.match(html,/aria-live="polite"/)});
+test('canvas renders a clamped experiment indicator',()=>{assert.match(html,/const current=experimentResults/);assert.match(html,/Math\.max\(0,Math\.min\(100,current\.visual\)\)/);assert.match(html,/draw\(\);/)});
