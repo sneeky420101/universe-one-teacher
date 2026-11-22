@@ -100,3 +100,9 @@ test('learning quest reports overall completion without student identifiers',()=
  assert.match(html,/role="status" aria-live="polite"/);
  assert.doesNotMatch(html,/id="studentName"/);
 });
+
+test('learning quest does not reveal explanation after a wrong answer',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/textContent=right\?'Correct! ⭐ '\+q\[3\]:'Not quite\. Try another answer\.'/);
+ assert.doesNotMatch(html,/\(right\?'Correct! ⭐ ':'Not quite\. Try another answer\. '\)\+q\[3\]/);
+});
