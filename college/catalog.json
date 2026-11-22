@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0.0",
+  "institution": "Universe One Virtual College (proposed)",
+  "status": "planning-not-authorized-or-accredited",
+  "owner": "VOLTFRAME Studios",
+  "policy": {
+    "noAccreditationClaims": true,
+    "noOfficialDegreesOrCreditsUntilAuthorized": true,
+    "instructorReviewRequiredForGrading": true,
+    "studentRecordsRequireSecureAuthenticatedBackend": true,
+    "noStudentPersonalDataInPrototype": true
+  },
+  "academicCalendar": {
+    "model": "term-based",
+    "terms": [],
+    "note": "Term dates, census dates and deadlines must be approved before enrollment."
+  },
+  "programs": [
+    {
+      "id": "foundations-exploration",
+      "title": "College Foundations Exploration",
+      "credential": "noncredit-prototype",
+      "status": "draft",
+      "courses": ["MATH-FOUND-001", "SCI-FOUND-001"]
+    }
+  ],
+  "courses": [
+    {
+      "id": "MATH-FOUND-001",
+      "title": "Foundations of Quantitative Reasoning",
+      "status": "draft",
+      "creditHours": null,
+      "subject": "Mathematics",
+      "prerequisites": [],
+      "learningOutcomes": ["Explain and compare fractions", "Solve introductory numerical reasoning problems"],
+      "delivery": ["web", "optional-vr"],
+      "modules": [{"id": "math-01", "title": "Fractions and ratios", "assessmentIds": ["math-practice-01"]}],
+      "assessmentIds": ["math-practice-01"],
+      "instructorApproved": false
+    },
+    {
+      "id": "SCI-FOUND-001",
+      "title": "Foundations of Scientific Inquiry",
+      "status": "draft",
+      "creditHours": null,
+      "subject": "Science",
+      "prerequisites": [],
+      "learningOutcomes": ["Describe a scientific process", "Distinguish evidence from unsupported claims"],
+      "delivery": ["web", "optional-vr"],
+      "modules": [{"id": "sci-01", "title": "Water cycle observation", "assessmentIds": ["sci-practice-01"]}],
+      "assessmentIds": ["sci-practice-01"],
+      "instructorApproved": false
+    }
+  ],
+  "assessments": [
+    {"id": "math-practice-01", "courseId": "MATH-FOUND-001", "kind": "formative-practice", "maxAttempts": null, "proctored": false, "countsTowardOfficialGrade": false, "requiresInstructorReview": false},
+    {"id": "sci-practice-01", "courseId": "SCI-FOUND-001", "kind": "formative-practice", "maxAttempts": null, "proctored": false, "countsTowardOfficialGrade": false, "requiresInstructorReview": false}
+  ]
+}
