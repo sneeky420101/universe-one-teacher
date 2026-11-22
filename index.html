@@ -30,5 +30,6 @@ voiceStart.addEventListener('click',()=>{
   window.speechSynthesis.speak(utterance);
 });
 voiceStop.addEventListener('click',()=>{if(speechAvailable)window.speechSynthesis.cancel();voiceStatus.textContent='Spoken guidance stopped.'});
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&speechAvailable)window.speechSynthesis.cancel()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&speechAvailable){window.speechSynthesis.cancel();voiceStatus.textContent='Spoken guidance paused because the page is hidden.'}});
+window.addEventListener('pagehide',()=>{if(speechAvailable)window.speechSynthesis.cancel()});
 </script></html>
