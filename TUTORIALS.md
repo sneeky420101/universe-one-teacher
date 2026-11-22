@@ -43,3 +43,11 @@ Each new feature should include: a plain-language purpose, prerequisites, a numb
 4. Select **Reset sample data** to restore the fictional examples.
 5. Use **Try a workshop** to practice as a learner.
 **Important:** All dashboard figures are fictional. This is not a gradebook, does not read workshop progress, and cannot identify students. School use requires privacy review, access controls, and verified integrations.
+
+## Tutor preview (about 2 minutes)
+1. Open `tutor.html` in a browser.
+2. Choose **Fractions** or **Water cycle**.
+3. Select **Explain simply** for an introduction, **Give a hint** for help, or **Practice question** to review.
+4. Type a subject-related question, such as “What is evaporation?”, and select **Ask**.
+5. If the tutor cannot answer, use the provided lesson or ask a teacher. Do not enter names, passwords, contact information, or student records.
+**Important:** This is a limited offline rule-based assistant, not a generative AI system. It does not personalize lessons, access school accounts, or submit student data.
