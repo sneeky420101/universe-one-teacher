@@ -94,3 +94,10 @@ Each new feature should include: a plain-language purpose, prerequisites, a numb
 4. Try keyboard, touch and mouse where supported. Test VR only on an actual compatible headset over HTTPS; desktop inspection cannot prove headset behavior.
 5. Run `npm test` from the repository root (Node.js 20+). The gameplay smoke tests verify local files and links, not real device interaction or visual rendering.
 **Testing status:** These steps are a manual test plan; device/browser and VR tests have not yet been confirmed. Report the exact mode, device, steps and error before marking a feature broken or fixed.
+
+## Returning to a workshop without losing tab progress
+1. Open `curriculum-workshop.html` and answer a question.
+2. Follow the tutor or dashboard link, then return to the workshop **in the same browser tab**.
+3. The workshop now restores validated attempts and correct-answer counters from session storage.
+4. Select **Reset practice progress** to clear counters; a new browser tab or closed session may start fresh.
+**Privacy:** These are anonymous per-tab counters, not student records or grades. Storage may be unavailable in restricted browsers. Browser verification is still required.
