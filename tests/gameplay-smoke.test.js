@@ -53,7 +53,7 @@ test('learning quest lets students retry wrong answers before advancing',()=>{
  const html=read('learning-quest.html');
  assert.match(html,/if\(right\)\{answered=true;/);
  assert.match(html,/\$\('options'\)\.children\[i\]\.disabled=true/);
- assert.match(html,/Not quite\. Try another answer\./);
+ assert.match(html,/Not quite\. Review the lesson and worked example above, then try a different answer\. Hint:/);
  assert.match(html,/\$\('next'\)\.hidden=true/);
 });
 
