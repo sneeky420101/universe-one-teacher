@@ -1,0 +1,3 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('experiments have reset control',()=>{assert.match(html,/id="experimentReset"/);assert.match(html,/\$\('experimentReset'\)\.onclick/)});
+test('reset clears simulated result and requires rerun',()=>{for(const t of ['delete experimentResults[key]','delete experimentDone[key]','Experiment reset. Change the variable','\u0024(\'check\').disabled=true'])assert.ok(html.includes(t),t)});
