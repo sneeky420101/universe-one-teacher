@@ -1,0 +1,34 @@
+name: Universe One QA
+on:
+  push:
+    branches:
+      - 'qa/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: package.json
+      - name: Run regression suite and curriculum gate
+        run: npm test
+      - name: Security audit
+        run: npm run security:audit
+      - name: Verify release gate remains blocked without approval
+        shell: bash
+        run: |
+          if npm run release:audit; then
+            echo 'Release gate unexpectedly passed; stop QA.'
+            exit 1
+          fi
+          echo 'Release gate correctly blocks unapproved launch.'
