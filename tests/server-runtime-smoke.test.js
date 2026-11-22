@@ -1,0 +1,11 @@
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const {spawn}=require('node:child_process');
+const net=require('node:net');
+const path=require('node:path');
+const root=path.join(__dirname,'..');
+async function freePort(){const server=net.createServer();await new Promise((resolve,reject)=>server.once('error',reject).listen(0,'127.0.0.1',resolve));const port=server.address().port;await new Promise(resolve=>server.close(resolve));return port}
+async function withServer(run){const port=await freePort();const child=spawn(process.execPath,['server.js'],{cwd:root,env:{...process.env,PORT:String(port)},stdio:'ignore'});const origin='http://127.0.0.1:'+port;try{let ready=false;for(let i=0;i<80;i++){if(child.exitCode!==null)throw new Error('Server exited unexpectedly');try{const response=await fetch(origin+'/health');if(response.ok){ready=true;break}}catch{}await new Promise(resolve=>setTimeout(resolve,50))}assert.ok(ready,'server did not become healthy');await run(origin)}finally{child.kill('SIGTERM')}}
+test('core learning routes return HTML and security headers',async()=>{await withServer(async origin=>{for(const route of ['/','/play.html','/life-workshops-3d.html','/pathways.html']){const r=await fetch(origin+route);assert.equal(r.status,200,route);assert.match(r.headers.get('content-type')||'',/text\/html/);assert.equal(r.headers.get('x-content-type-options'),'nosniff');assert.equal(r.headers.get('x-frame-options'),'DENY');assert.match(r.headers.get('content-security-policy')||'',/frame-ancestors 'none'/);assert.ok((await r.text()).length>100,route)}})});
+test('unknown routes and unsafe methods are rejected',async()=>{await withServer(async origin=>{assert.equal((await fetch(origin+'/not-a-page')).status,404);const post=await fetch(origin+'/life-workshops-3d.html',{method:'POST'});assert.equal(post.status,405);assert.match(post.headers.get('allow')||'',/GET/)})});
+test('HEAD works without a response body',async()=>{await withServer(async origin=>{const r=await fetch(origin+'/life-workshops-3d.html',{method:'HEAD'});assert.equal(r.status,200);assert.equal((await r.text()).length,0)})});
