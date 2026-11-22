@@ -3,10 +3,10 @@
 <title>Curriculum Workshop Preview — Universe One</title>
 <style>body{font:16px system-ui;background:#101827;color:#f5f7fb;max-width:900px;margin:auto;padding:24px}a{color:#9cdbff}button,select{padding:12px;border-radius:8px;margin:6px;background:#e8f5ff;color:#102033;border:0}button:focus,select:focus{outline:3px solid orange}.panel{background:#203049;padding:20px;border-radius:14px;margin:16px 0}.muted{color:#c5d3e2}.correct{color:#9ef5b1}.incorrect{color:#ffd19d} .tour-target{outline:3px solid #ffd36b;outline-offset:5px}#tour{border:2px solid #ffd36b}#tour[hidden]{display:none}</style></head>
 <body><main><h1>Universe One — Curriculum Workshop</h1><p class="muted">Prototype: illustrative objectives only. Not official standards, educator-approved curriculum, or an AI tutor. No student account or server-side progress collection.</p>
-<p><a href="index.html">Return to classroom</a> · <a href="TUTORIALS.md">Beginner tutorials</a></p><details class="panel"><summary><strong>How to use this workshop — 4 easy steps</strong></summary><ol><li>Choose Fractions or Water cycle from the menu.</li><li>Read the learning objective and open the source link.</li><li>Answer the practice question.</li><li>Read the feedback and retry if needed.</li></ol><p>No school grade is submitted. This is a practice preview.</p></details><section id="tour" class="panel" aria-label="Guided tutorial" hidden><h2>Guided tour <span id="tour-count"></span></h2><p id="tour-instruction" aria-live="polite"></p><button type="button" id="tour-back">Back</button><button type="button" id="tour-next">Next</button><button type="button" id="tour-exit">Exit tutorial</button></section><p><button type="button" id="tour-start">Start guided tutorial</button></p><label for="lesson">Choose a sample workshop</label><select id="lesson"></select>
+<p><a href="index.html">Return to classroom</a> · <a href="TUTORIALS.md">Beginner tutorials</a> · <a href="educator-dashboard.html">Anonymous educator preview</a></p><details class="panel"><summary><strong>How to use this workshop — 4 easy steps</strong></summary><ol><li>Choose Fractions or Water cycle from the menu.</li><li>Read the learning objective and open the source link.</li><li>Answer the practice question.</li><li>Read the feedback and retry if needed.</li></ol><p>No school grade is submitted. This is a practice preview.</p></details><section id="tour" class="panel" aria-label="Guided tutorial" hidden><h2>Guided tour <span id="tour-count"></span></h2><p id="tour-instruction" aria-live="polite"></p><button type="button" id="tour-back">Back</button><button type="button" id="tour-next">Next</button><button type="button" id="tour-exit">Exit tutorial</button></section><p><button type="button" id="tour-start">Start guided tutorial</button></p><label for="lesson">Choose a sample workshop</label><select id="lesson"></select>
 <section class="panel" aria-live="polite"><h2 id="heading"></h2><p id="objective"></p><p id="source"></p></section>
 <section class="panel"><h2>Practice check</h2><p id="question"></p><div id="choices" role="group" aria-label="Answer choices"></div><p id="feedback" role="status"></p></section>
-<section class="panel"><h2>Your practice progress (this session only)</h2><p id="progress" role="status">No answers yet.</p><button type="button" id="reset-progress">Reset practice progress</button><p class="muted">Practice counters stay in this page until it is closed or reloaded. They are not school grades or shared with teachers.</p></section></main><script>
+<section class="panel"><h2>Your practice progress (this session only)</h2><p id="progress" role="status">No answers yet.</p><button type="button" id="reset-progress">Reset practice progress</button><p class="muted">Practice counters are temporarily stored in this browser tab so the educator preview can show an anonymous summary. They are not school grades, are not uploaded, and disappear when the tab session ends.</p></section></main><script>
 "use strict";
 const samples=[
 {id:"fractions",title:"Fractions workshop",objective:"Explain why two halves equal one whole.",source:"https://www.khanacademy.org/math/arithmetic/fraction-arithmetic",question:"How many halves make one whole?",choices:["One","Two","Three"],answer:1,explanation:"Two equal halves combine to make one whole."},
@@ -14,8 +14,9 @@ const samples=[
 ];
 const $=id=>document.getElementById(id);
 const practice={};
+function syncPractice(){try{sessionStorage.setItem("universe-one-practice-v1",JSON.stringify(practice))}catch{ /* Storage unavailable: in-page counters still work. */ }}
 function showProgress(){const rows=Object.entries(practice);const attempts=rows.reduce((n,[,v])=>n+v.attempts,0);const correct=rows.reduce((n,[,v])=>n+v.correct,0);$("progress").textContent=attempts?`${correct} correct out of ${attempts} attempts across ${rows.length} workshop(s).`:"No answers yet.";}
-$("reset-progress").addEventListener("click",()=>{for(const key of Object.keys(practice))delete practice[key];showProgress()});
+$("reset-progress").addEventListener("click",()=>{for(const key of Object.keys(practice))delete practice[key];syncPractice();showProgress()});
 for(const item of samples){const opt=document.createElement("option");opt.value=item.id;opt.textContent=item.title;$("lesson").append(opt)}
 function render(){
  const item=samples.find(x=>x.id===$("lesson").value)||samples[0];
@@ -23,7 +24,7 @@ function render(){
  const link=document.createElement("a");link.href=item.source;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Read external educational source";
  $("source").replaceChildren(link);$("choices").replaceChildren();$("feedback").textContent="";
  item.choices.forEach((choice,i)=>{const b=document.createElement("button");b.type="button";b.textContent=choice;b.addEventListener("click",()=>{
- const correct=i===item.answer;const record=practice[item.id]||(practice[item.id]={attempts:0,correct:0});record.attempts++;if(correct)record.correct++;showProgress();$("feedback").className=correct?"correct":"incorrect";$("feedback").textContent=(correct?"Correct. ":"Try again. ")+item.explanation;
+ const correct=i===item.answer;const record=practice[item.id]||(practice[item.id]={attempts:0,correct:0});record.attempts++;if(correct)record.correct++;syncPractice();showProgress();$("feedback").className=correct?"correct":"incorrect";$("feedback").textContent=(correct?"Correct. ":"Try again. ")+item.explanation;
  });$("choices").append(b)});
 }
 $("lesson").addEventListener("change",render);render();showProgress();
