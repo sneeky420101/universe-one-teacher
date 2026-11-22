@@ -28,6 +28,14 @@ jobs:
             exit 1
           fi
           echo 'Android packaging blockers correctly detected.'
+      - name: Stage and verify Android web payload
+        run: npm run android:stage
+      - name: Archive unsigned Android web payload for internal QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: universe-one-android-web-qa
+          path: build/android-web/
+          retention-days: 7
       - name: Security audit
         run: npm run security:audit
       - name: Verify release gate remains blocked without approval
