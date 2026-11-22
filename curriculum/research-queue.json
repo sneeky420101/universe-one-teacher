@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "research-only",
+  "description": "Original teaching prompts and source discovery pointers. No fact is published as verified without independent evidence, license checks and educator review.",
+  "items": [
+    {
+      "id": "math-fractions-01",
+      "subject": "mathematics",
+      "level": "Grade 4-6",
+      "objective": "Model equivalent fractions with virtual manipulatives",
+      "practice": "Represent 1/2 and 2/4 using two equal-area bars; explain why they are equivalent.",
+      "primarySource": "https://www.nist.gov/pml/owm",
+      "reviewStatus": "pending"
+    },
+    {
+      "id": "science-earth-01",
+      "subject": "earth-science",
+      "level": "Grade 3-8",
+      "objective": "Build a labeled model of the water cycle",
+      "practice": "Move water tokens through evaporation, condensation and precipitation stages; explain energy input.",
+      "primarySource": "https://www.usgs.gov/special-topics/water-science-school",
+      "reviewStatus": "pending"
+    },
+    {
+      "id": "engineering-circuit-01",
+      "subject": "engineering",
+      "level": "Grade 6-12",
+      "objective": "Compare open and closed electrical circuits",
+      "practice": "Connect a battery, switch and lamp in a simulation, then predict when the lamp lights.",
+      "primarySource": "https://www.nasa.gov/learning-resources/",
+      "reviewStatus": "pending"
+    },
+    {
+      "id": "biology-ecosystems-01",
+      "subject": "biology",
+      "level": "Grade 5-10",
+      "objective": "Investigate a food web",
+      "practice": "Construct a three-level food web and predict the effect of removing one producer.",
+      "primarySource": "https://medlineplus.gov/",
+      "reviewStatus": "pending"
+    },
+    {
+      "id": "college-stats-01",
+      "subject": "statistics",
+      "level": "College introductory",
+      "objective": "Distinguish sample and population",
+      "practice": "Collect a small simulated sample and compare its mean to the full population mean.",
+      "primarySource": "https://openstax.org/subjects",
+      "reviewStatus": "pending"
+    },
+    {
+      "id": "computing-accessibility-01",
+      "subject": "computer-science",
+      "level": "Grade 9-College",
+      "objective": "Test keyboard accessibility",
+      "practice": "Navigate a sample form using only Tab, Shift+Tab and Enter; report unreachable controls.",
+      "primarySource": "https://www.w3.org/WAI/",
+      "reviewStatus": "pending"
+    }
+  ]
+}
