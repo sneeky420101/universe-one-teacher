@@ -8,4 +8,4 @@ test('Quest XR requests immersive-vr',()=>assert.match(quest,/requestSession\('i
 test('Quest uses XR viewer pose',()=>assert.match(quest,/getViewerPose\(refSpace\)/));
 test('Quest provides non-VR fallback',()=>assert.match(quest,/desktopPreview\(\)/));
 test('copyright notice',()=>{assert.match(index,/Brandon Hastings/);assert.match(quest,/VOLTFRAME Studios/)});
-test('no client-side secrets',()=>{for(const html of [index,quest])assert.doesNotMatch(html,/-----BEGIN PRIVATE KEY-----|sk_live_[a-zA-Z0-9]{12}/)});
+test('no client-side secrets',()=>{for(const html of [index,quest])assert.doesNotMatch(html,new RegExp('-----BEGIN PRIVATE'+' KEY-----|sk_live_[a-zA-Z0-9]{12}'))});
