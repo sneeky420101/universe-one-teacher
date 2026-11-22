@@ -103,7 +103,7 @@ test('learning quest reports overall completion without student identifiers',()=
 
 test('learning quest does not reveal explanation after a wrong answer',()=>{
  const html=read('learning-quest.html');
- assert.match(html,/textContent=right\?'Correct! ⭐ '\+q\[3\]:'Not quite\. Try another answer\.'/);
+ assert.match(html,/textContent=right\?'Correct! ⭐ '\+q\[3\]:'Not quite\. Review the lesson and worked example above, then try a different answer\. Hint: '\+hints\[r\.id\]/);
  assert.doesNotMatch(html,/\(right\?'Correct! ⭐ ':'Not quite\. Try another answer\. '\)\+q\[3\]/);
 });
 
@@ -115,4 +115,11 @@ test('learning quest offers a printable identifier-free teacher summary',()=>{
  assert.match(html,/main>section:not\(:nth-of-type\(3\)\)/);
  assert.match(html,/id="roomProgress"/);
  assert.match(html,/id="overallProgress"/);
+});
+
+test('wrong-answer hints are subject-specific and do not reveal the correct option',()=>{
+ const html=read('learning-quest.html');
+ for(const room of ['math','science','geography','reading','space'])assert.match(html,new RegExp(room+":'[^']+'"));
+ assert.match(html,/\$\('options'\)\.children\[i\]\.disabled=true/);
+ assert.match(html,/const hints=\{/);
 });
