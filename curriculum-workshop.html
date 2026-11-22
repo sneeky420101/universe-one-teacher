@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Curriculum Workshop Preview — Universe One</title>
+<style>body{font:16px system-ui;background:#101827;color:#f5f7fb;max-width:900px;margin:auto;padding:24px}a{color:#9cdbff}button,select{padding:12px;border-radius:8px;margin:6px;background:#e8f5ff;color:#102033;border:0}button:focus,select:focus{outline:3px solid orange}.panel{background:#203049;padding:20px;border-radius:14px;margin:16px 0}.muted{color:#c5d3e2}.correct{color:#9ef5b1}.incorrect{color:#ffd19d}</style></head>
+<body><main><h1>Universe One — Curriculum Workshop</h1><p class="muted">Prototype: illustrative objectives only. Not official standards, educator-approved curriculum, or an AI tutor. No student account or server-side progress collection.</p>
+<p><a href="index.html">Return to classroom</a></p><label for="lesson">Choose a sample workshop</label><select id="lesson"></select>
+<section class="panel" aria-live="polite"><h2 id="heading"></h2><p id="objective"></p><p id="source"></p></section>
+<section class="panel"><h2>Practice check</h2><p id="question"></p><div id="choices" role="group" aria-label="Answer choices"></div><p id="feedback" role="status"></p></section>
+</main><script>
+"use strict";
+const samples=[
+{id:"fractions",title:"Fractions workshop",objective:"Explain why two halves equal one whole.",source:"https://www.khanacademy.org/math/arithmetic/fraction-arithmetic",question:"How many halves make one whole?",choices:["One","Two","Three"],answer:1,explanation:"Two equal halves combine to make one whole."},
+{id:"water",title:"Water cycle workshop",objective:"Identify evaporation, condensation and precipitation.",source:"https://www.usgs.gov/special-topics/water-science-school/science/water-cycle",question:"What is the process called when liquid water becomes water vapor?",choices:["Evaporation","Precipitation","Condensation"],answer:0,explanation:"Evaporation changes liquid water into water vapor."}
+];
+const $=id=>document.getElementById(id);
+for(const item of samples){const opt=document.createElement("option");opt.value=item.id;opt.textContent=item.title;$("lesson").append(opt)}
+function render(){
+ const item=samples.find(x=>x.id===$("lesson").value)||samples[0];
+ $("heading").textContent=item.title;$("objective").textContent=item.objective;$("question").textContent=item.question;
+ const link=document.createElement("a");link.href=item.source;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Read external educational source";
+ $("source").replaceChildren(link);$("choices").replaceChildren();$("feedback").textContent="";
+ item.choices.forEach((choice,i)=>{const b=document.createElement("button");b.type="button";b.textContent=choice;b.addEventListener("click",()=>{
+ const correct=i===item.answer;$("feedback").className=correct?"correct":"incorrect";$("feedback").textContent=(correct?"Correct. ":"Try again. ")+item.explanation;
+ });$("choices").append(b)});
+}
+$("lesson").addEventListener("change",render);render();
+</script></body></html>
