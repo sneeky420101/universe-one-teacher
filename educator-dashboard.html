@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Educator Dashboard Preview — Universe One</title>
+<style>body{font:16px system-ui;background:#101827;color:#f4f7ff;max-width:850px;margin:auto;padding:24px}a{color:#9bdfff}.panel{background:#22344c;padding:20px;border-radius:12px;margin:16px 0}button{padding:10px 16px;margin:4px;border:0;border-radius:8px;background:#d9f1ff;color:#102030}button:focus,a:focus{outline:3px solid #ffdb70}.muted{color:#c8d7e7}table{border-collapse:collapse;width:100%}th,td{padding:12px;border-bottom:1px solid #6a7d94;text-align:left}</style></head>
+<body><main><h1>Universe One — Educator Dashboard Preview</h1>
+<p class="muted">Demonstration only. All records below are fictional examples. No student accounts, student data, grades, or school integrations are connected.</p>
+<p><a href="index.html">Return to classroom</a> · <a href="curriculum-workshop.html">Try a workshop</a> · <a href="TUTORIALS.md">Tutorial guide</a></p>
+<section class="panel"><h2>How to use this dashboard</h2><button id="start" type="button">Start guided tutorial</button><div id="tour" hidden><p id="step" role="status"></p><button id="back" type="button">Back</button><button id="next" type="button">Next</button><button id="exit" type="button">Exit</button></div></section>
+<section class="panel" id="summary"><h2>Practice overview — sample data</h2><p id="metrics"></p></section>
+<section class="panel" id="table-panel"><h2>Workshop activity — sample data</h2><table><thead><tr><th scope="col">Workshop</th><th scope="col">Attempts</th><th scope="col">Correct</th></tr></thead><tbody id="rows"></tbody></table></section>
+<section class="panel" id="controls"><h2>Preview controls</h2><button type="button" id="reset">Reset sample data</button><p class="muted">This button resets fictional dashboard examples only. It cannot modify actual workshop progress.</p></section>
+</main><script>
+"use strict";
+const sample=[{title:"Fractions",attempts:12,correct:9},{title:"Water cycle",attempts:8,correct:6}];
+let data=sample.map(x=>({...x}));
+const $=id=>document.getElementById(id);
+function render(){const attempts=data.reduce((n,x)=>n+x.attempts,0),correct=data.reduce((n,x)=>n+x.correct,0);$("metrics").textContent=`${data.length} sample workshops · ${attempts} example attempts · ${correct} example correct answers (${attempts?Math.round(correct/attempts*100):0}%).`;$("rows").replaceChildren();for(const item of data){const tr=document.createElement("tr");for(const value of [item.title,item.attempts,item.correct]){const td=document.createElement("td");td.textContent=value;tr.append(td)}$("rows").append(tr)}}
+$("reset").addEventListener("click",()=>{data=sample.map(x=>({...x}));render()});render();
+const steps=[["summary","This overview summarizes fictional practice activity."],["table-panel","This table shows example attempts and correct answers by workshop."],["controls","Reset restores the fictional examples. Real student records are not available."]];
+let index=0;
+function show(){const [target,message]=steps[index];$("step").textContent=`Step ${index+1} of ${steps.length}: ${message}`;$("back").disabled=index===0;$("next").textContent=index===steps.length-1?"Finish":"Next";document.querySelectorAll(".highlight").forEach(e=>e.classList.remove("highlight"));$(target).classList.add("highlight");$(target).style.outline="3px solid #ffdb70";for(const [id] of steps){if(id!==target)$(id).style.outline=""}}
+function close(){document.querySelectorAll(".highlight").forEach(e=>{e.classList.remove("highlight");e.style.outline=""});$("tour").hidden=true;$("start").focus()}
+$("start").addEventListener("click",()=>{index=0;$("tour").hidden=false;show();$("next").focus()});$("back").addEventListener("click",()=>{if(index>0){index--;show()}});$("next").addEventListener("click",()=>{if(index===steps.length-1)close();else{index++;show()}});$("exit").addEventListener("click",close);document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("tour").hidden)close()});
+</script></body></html>
