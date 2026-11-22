@@ -14,6 +14,17 @@ const samples=[
 ];
 const $=id=>document.getElementById(id);
 const practice={};
+try {
+ const saved=JSON.parse(sessionStorage.getItem("universe-one-practice-v1")||"{}");
+ const allowed=new Set(samples.map(item=>item.id));
+ if(saved&&typeof saved==="object"&&!Array.isArray(saved)){
+  for(const [id,value] of Object.entries(saved)){
+   if(!allowed.has(id)||!value||typeof value!=="object")continue;
+   const {attempts,correct}=value;
+   if(Number.isSafeInteger(attempts)&&Number.isSafeInteger(correct)&&attempts>=0&&correct>=0&&correct<=attempts)practice[id]={attempts,correct};
+  }
+ }
+} catch { /* Invalid or blocked session storage starts with empty counters. */ }
 function syncPractice(){try{sessionStorage.setItem("universe-one-practice-v1",JSON.stringify(practice))}catch{ /* Storage unavailable: in-page counters still work. */ }}
 function showProgress(){const rows=Object.entries(practice);const attempts=rows.reduce((n,[,v])=>n+v.attempts,0);const correct=rows.reduce((n,[,v])=>n+v.correct,0);$("progress").textContent=attempts?`${correct} correct out of ${attempts} attempts across ${rows.length} workshop(s).`:"No answers yet.";}
 $("reset-progress").addEventListener("click",()=>{for(const key of Object.keys(practice))delete practice[key];syncPractice();showProgress()});
