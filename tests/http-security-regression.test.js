@@ -57,6 +57,11 @@ test('production HTTP boundary rejects mutation and traversal and hides internal
       assert.equal(result.status, 404, path);
       assert.doesNotMatch(result.body, /require\(|private_key|password/i);
     }
+    const knowledge = await request(port, 'GET', '/api/verified-knowledge');
+    assert.equal(knowledge.status, 200);
+    const payload = JSON.parse(knowledge.body);
+    assert.equal(payload.verified, false, 'empty approved catalog must not claim verification');
+    assert.deepEqual(payload.records, []);
     const head = await request(port, 'HEAD', '/');
     assert.equal(head.status, 200);
     assert.equal(head.body, '');
