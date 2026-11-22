@@ -13,3 +13,5 @@ test('guided mission offers keyboard-accessible object selection and progression
 test('3D trade missions include scored, single-attempt scenario assessments',()=>{for(const marker of ['id="challenge"','id="score"','const assessments=','function renderChallenge(part)','if(answered)return','correctCount++','practice only; not a professional qualification'])assert.ok(workshop.includes(marker),marker)});
 
 test('practice mission tracks attempted and correct answers without awarding credentials',()=>{for(const marker of ['attempted=new Set()','correctParts=new Set()','attempted.add(part.i)','correctParts.add(part.i)','id="missionResult"','Practice mission passed:','Reset to retry missed concepts.'])assert.ok(workshop.includes(marker),marker)});
+
+test('revisiting a question cannot inflate the score',()=>{assert.match(workshop,/answered=attempted\.has\(part\.i\)/);assert.match(workshop,/b\.disabled=attempted\.has\(part\.i\)/);assert.match(workshop,/correctCount=correctParts\.size/);assert.match(workshop,/Already answered this attempt/)});
