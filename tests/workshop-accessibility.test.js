@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('workshop accessibility controls exist',()=>{for(const marker of ['Skip to lesson controls','id="lessonPanel"','aria-label="Rotate 3D view left"','aria-label="Rotate 3D view right"','prefers-reduced-motion','aria-live="polite"'])assert.ok(html.includes(marker),marker)});
+test('speech is optional and can be stopped',()=>{for(const marker of ['id="readAloud"','speechSynthesis','SpeechSynthesisUtterance','speechSynthesis.cancel()','not supported in this browser'])assert.ok(html.includes(marker),marker)});
+test('lesson remains text-based when speech is unavailable',()=>{for(const marker of ['id="detail"','id="steps"','id="why"','id="question"'])assert.ok(html.includes(marker),marker)});
