@@ -43,7 +43,7 @@
     };
   }
   function submit(session, action) {
-    if (!session || !Number.isInteger(session.step) || !Array.isArray(session.history)) throw new TypeError('Invalid session');
+    if (!session || !Number.isInteger(session.step) || session.step < 0 || session.step > STEPS.length || !Array.isArray(session.history) || !Number.isInteger(session.attempts) || session.attempts < 0 || typeof session.completed !== 'boolean' || (session.step === STEPS.length && !session.completed)) throw new TypeError('Invalid session');
     if (session.completed) return { session, result: { correct: true, message: 'Lesson already completed.', nextStep: null } };
     const step = STEPS[session.step];
     let correct = false, explanation = '';
