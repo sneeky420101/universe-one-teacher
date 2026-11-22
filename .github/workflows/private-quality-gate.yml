@@ -17,7 +17,22 @@ jobs:
           node-version: '22'
       - name: Run all automated tests
         run: npm test
-      - name: Run release audit
-        run: npm run release:audit
+      - name: Verify public-release hold remains enforced
+        shell: bash
+        run: |
+          set +e
+          output=$(npm run release:audit 2>&1)
+          status=$?
+          set -e
+          printf '%s\n' "$output"
+          if [ "$status" -ne 1 ]; then
+            echo "Expected the release audit to block publication; received status $status"
+            exit 1
+          fi
+          if ! grep -q 'NOT READY:' <<< "$output"; then
+            echo "Release audit failed without the expected hold evidence"
+            exit 1
+          fi
+          echo "Public release remains blocked as required."
       - name: Run security audit
         run: npm run security:audit
