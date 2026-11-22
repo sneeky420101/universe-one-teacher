@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "purpose": "Encourage curiosity, competence, agency and lifelong learning through evidence-based educational games.",
+  "principles": [
+    {
+      "id": "mastery",
+      "rule": "Reward demonstrated understanding and improvement, not screen time or purchases."
+    },
+    {
+      "id": "agency",
+      "rule": "Offer meaningful choice of subjects, challenges, pace, and accessible 2D or optional VR experiences."
+    },
+    {
+      "id": "feedback",
+      "rule": "Explain why an answer is right or wrong, allow low-stakes retries and recommend a next learning step."
+    },
+    {
+      "id": "wellbeing",
+      "rule": "Avoid addictive streak pressure, manipulative rewards, public rankings of children and punitive failure messaging."
+    },
+    {
+      "id": "accessibility",
+      "rule": "Provide keyboard, screen-reader, reduced-motion and non-VR alternatives for required learning."
+    },
+    {
+      "id": "evidence",
+      "rule": "Keep source references, educator review status and academic recognition claims truthful."
+    },
+    {
+      "id": "privacy",
+      "rule": "Do not require identifying student information for prototype practice; secure student records before formal enrollment."
+    }
+  ],
+  "progression": {
+    "practice": "Stars and feedback for formative learning only",
+    "mastery": "Use multiple independent demonstrations of understanding before marking a topic mastered",
+    "formalAssessment": "Instructor-approved, authenticated, auditable grading system required before official credit"
+  },
+  "releaseStatus": "draft-not-accredited"
+}
