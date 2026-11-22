@@ -26,4 +26,6 @@ function supportiveFeedback(correct) {
     ? 'Good work. Explain why your answer works, then try the next challenge.'
     : 'Good effort. Review the explanation, compare each step with your answer, and try again. Mistakes are part of learning.';
 }
-module.exports = {recordAttempt,lessonSummary,supportiveFeedback};
+const api = {recordAttempt,lessonSummary,supportiveFeedback};
+if (typeof module !== 'undefined' && module.exports) module.exports = api;
+if (typeof window !== 'undefined') window.UniverseProgress = api;
