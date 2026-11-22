@@ -56,3 +56,12 @@ test('learning quest lets students retry wrong answers before advancing',()=>{
  assert.match(html,/Not quite\. Try another answer\./);
  assert.match(html,/\$\('next'\)\.hidden=true/);
 });
+
+test('learning quest offers a privacy-preserving CSV progress export',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/id="exportProgress"/);
+ assert.match(html,/universe-one-learning-progress\.csv/);
+ assert.match(html,/text\/csv;charset=utf-8/);
+ assert.match(html,/\['Learning room','Completed','Total'\]/);
+ assert.doesNotMatch(html,/\['Student name','Email'/);
+});
