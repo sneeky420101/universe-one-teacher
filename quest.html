@@ -42,6 +42,30 @@ gl.bufferData(gl.ARRAY_BUFFER,vertices,gl.DYNAMIC_DRAW);
 gl.uniformMatrix4fv(gl.getUniformLocation(program,'mvp'),false,multiply(vp,translation(...offset)));
 gl.uniform4fv(gl.getUniformLocation(program,'color'),color);
 gl.drawArrays(gl.TRIANGLES,0,vertices.length/3)}
+let boardProgram,boardBuffer,boardTexture,boardKey='';
+function drawBoard(vp){
+if(!boardProgram){
+boardProgram=gl.createProgram();
+gl.attachShader(boardProgram,shader(gl.VERTEX_SHADER,'attribute vec3 p;attribute vec2 uv;varying vec2 tex;uniform mat4 mvp;void main(){tex=uv;gl_Position=mvp*vec4(p,1.0);}'));
+gl.attachShader(boardProgram,shader(gl.FRAGMENT_SHADER,'precision mediump float;varying vec2 tex;uniform sampler2D image;void main(){gl_FragColor=texture2D(image,tex);}'));
+gl.linkProgram(boardProgram);if(!gl.getProgramParameter(boardProgram,gl.LINK_STATUS))throw Error('Whiteboard shader failed');
+boardBuffer=gl.createBuffer();boardTexture=gl.createTexture();
+}
+const key=$('topic').value+'|'+$('level').value;
+gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,boardTexture);
+if(key!==boardKey){
+const c=document.createElement('canvas');c.width=1024;c.height=512;const ctx=c.getContext('2d');
+ctx.fillStyle='#edf8ff';ctx.fillRect(0,0,1024,512);ctx.fillStyle='#16334b';ctx.font='bold 48px sans-serif';ctx.fillText('UNIVERSE ONE | '+$('topic').selectedOptions[0].text,40,70);
+ctx.font='32px sans-serif';ctx.fillText($('level').value+' — Sample lesson',40,135);
+let line='',y=210;for(const word of facts[$('topic').value].split(' ')){if(ctx.measureText(line+word).width>940){ctx.fillText(line,40,y);y+=44;line=''}line+=word+' '}ctx.fillText(line,40,y);
+ctx.fillText('Trigger: next learning station',40,470);
+gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);boardKey=key;
+}
+gl.useProgram(boardProgram);gl.bindBuffer(gl.ARRAY_BUFFER,boardBuffer);
+gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-2,0,-7.85,0,1,2,0,-7.85,1,1,2,1.5,-7.85,1,0,-2,0,-7.85,0,1,2,1.5,-7.85,1,0,-2,1.5,-7.85,0,0]),gl.STATIC_DRAW);
+const p=gl.getAttribLocation(boardProgram,'p'),uv=gl.getAttribLocation(boardProgram,'uv');gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,3,gl.FLOAT,false,20,0);gl.enableVertexAttribArray(uv);gl.vertexAttribPointer(uv,2,gl.FLOAT,false,20,12);gl.uniformMatrix4fv(gl.getUniformLocation(boardProgram,'mvp'),false,vp);gl.uniform1i(gl.getUniformLocation(boardProgram,'image'),0);gl.drawArrays(gl.TRIANGLES,0,6);gl.disableVertexAttribArray(uv);gl.disableVertexAttribArray(p);
+gl.useProgram(program);gl.bindBuffer(gl.ARRAY_BUFFER,buffer);const attr=gl.getAttribLocation(program,'p');gl.enableVertexAttribArray(attr);gl.vertexAttribPointer(attr,3,gl.FLOAT,false,0,0);
+}
 function renderScene(vp){gl.clearColor(.025,.05,.12,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 draw(vp,[0,-1.55,-4],[4,.05,5],[.35,.38,.42,1]);
 draw(vp,[0,0,-8],[4,1.6,.08],[.48,.55,.65,1]);
@@ -58,7 +82,7 @@ draw(vp,[0,.55,-3.3],[1.45,.8,.06],[.12,.27,.48,1]);
 const t=topics.indexOf($('topic').value);
 draw(vp,[0,0,-2.6],[.3,.3,.3],t===0?[.25,.63,.94,1]:t===1?[.98,.69,.21,1]:[.35,.85,.5,1]);
 draw(vp,[-.9,0,-2.9],[.17,.17,.17],[.95,.72,.3,1]);
-draw(vp,[.9,0,-2.9],[.17,.17,.17],[.82,.45,.88,1]);}
+draw(vp,[.9,0,-2.9],[.17,.17,.17],[.82,.45,.88,1]);drawBoard(vp);}
 function desktopPreview(){if(!gl)return;gl.disable(gl.SCISSOR_TEST);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,$('scene').width,$('scene').height);const p=new Float32Array([1.2,0,0,0,0,1.8,0,0,0,0,-1.02,-1,0,0,-.2,0]);renderScene(p)}
 async function start(){if(starting||session||!gl)return;starting=true;walkX=0;walkZ=0;lastFrame=0;$('enter').disabled=true;try{session=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor','bounded-floor']});await gl.makeXRCompatible();session.addEventListener('end',()=>{session=null;refSpace=null;$('exit').disabled=true;$('enter').disabled=false;$('status').textContent='VR session ended.';desktopPreview()});session.addEventListener('select',()=>{$('topic').selectedIndex=($('topic').selectedIndex+1)%topics.length;updateLesson()});baseLayer=new XRWebGLLayer(session,gl);session.updateRenderState({baseLayer});refSpace=await session.requestReferenceSpace('local');$('enter').disabled=true;$('exit').disabled=false;$('status').textContent='VR classroom active. Press controller trigger to change station.';session.requestAnimationFrame(frame)}catch(e){$('status').textContent='VR could not start: '+e.message;$('enter').disabled=false;if(session)await session.end().catch(()=>{});session=null}finally{starting=false}}
 let walkX=0,walkZ=0,lastFrame=0;
