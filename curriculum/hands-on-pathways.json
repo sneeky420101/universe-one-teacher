@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "1.0.0",
+  "status": "prototype-draft-not-certified",
+  "owner": "© 2026 Brandon Hastings — VOLTFRAME Studios",
+  "purpose": "Prototype grade-specific hands-on learning paths; not official standards mappings.",
+  "paths": [
+    {
+      "id": "math-g5-fractions-workshop",
+      "country": "US",
+      "jurisdiction": "illustrative-only",
+      "grade": "5",
+      "subject": "Mathematics",
+      "language": "en",
+      "title": "Build a fraction workshop",
+      "objective": "Model equivalent fractions using equal-sized parts.",
+      "sourceUrl": "https://www.khanacademy.org/math/arithmetic/fraction-arithmetic",
+      "license": "external-link-only",
+      "educatorReviewed": false,
+      "officialStandardsAligned": false,
+      "publicationStatus": "draft",
+      "activities": [
+        {
+          "type": "explain",
+          "prompt": "Partition one whole into two equal halves and then four equal quarters."
+        },
+        {
+          "type": "hands-on",
+          "prompt": "Place two quarter tiles over one half tile and compare the covered area.",
+          "interaction": "tile-overlay",
+          "successCondition": "2/4 equals 1/2"
+        },
+        {
+          "type": "assessment",
+          "question": "Which fraction is equivalent to one half?",
+          "choices": [
+            "1/4",
+            "2/4",
+            "3/4"
+          ],
+          "correctIndex": 1,
+          "explanation": "Two of four equal parts cover the same amount as one of two equal parts."
+        }
+      ]
+    },
+    {
+      "id": "science-primary-water-cycle-lab",
+      "country": "GLOBAL",
+      "jurisdiction": "cross-national-example",
+      "grade": "Primary",
+      "subject": "Science",
+      "language": "en",
+      "title": "Water cycle simulation",
+      "objective": "Describe evaporation, condensation, and precipitation.",
+      "sourceUrl": "https://www.usgs.gov/special-topics/water-science-school/science/water-cycle",
+      "license": "external-link-only",
+      "educatorReviewed": false,
+      "officialStandardsAligned": false,
+      "publicationStatus": "draft",
+      "activities": [
+        {
+          "type": "hands-on",
+          "prompt": "Adjust the simulated sunlight and observe water evaporating and condensing.",
+          "interaction": "sunlight-slider",
+          "successCondition": "Identify three cycle stages"
+        },
+        {
+          "type": "assessment",
+          "question": "What is the process called when water vapor cools into droplets?",
+          "choices": [
+            "Evaporation",
+            "Condensation",
+            "Precipitation"
+          ],
+          "correctIndex": 1,
+          "explanation": "Cooling water vapor forms liquid droplets through condensation."
+        }
+      ]
+    }
+  ]
+}
