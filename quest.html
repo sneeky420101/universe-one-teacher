@@ -23,7 +23,7 @@ const topics=['space','math','biology'];
 const questions={space:{q:'Which planet is third from the Sun?',answers:['Earth','Mars'],correct:0},math:{q:'How many meters are in one kilometer?',answers:['100','1000'],correct:1},biology:{q:'Do living systems interact with their environment?',answers:['Yes','No'],correct:0}};
 let answerIndex=0,feedback='',completed=new Set();
 function nextStation(){$('topic').selectedIndex=($('topic').selectedIndex+1)%topics.length;answerIndex=0;feedback='';updateLesson();speakLesson()}
-function submitAnswer(){const topic=$('topic').value;const item=questions[topic];if(answerIndex===item.correct){completed.add(topic);feedback='Correct! Completed '+completed.size+' of 3 stations.'}else{feedback='Try again. Review the lesson.'}updateLesson()}
+function submitAnswer(){const topic=$('topic').value;const item=questions[topic];if(answerIndex===item.correct){completed.add(topic);feedback=completed.size===3?'Mission complete! 300 XP — Explorer badge earned.':'Correct! '+(completed.size*100)+' XP | Missions '+completed.size+'/3';}else{feedback='Try again. Review the lesson.'}updateLesson()}
 function speakLesson(){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(facts[$('topic').value].split(' Source:')[0]);u.rate=.9;speechSynthesis.speak(u)}catch{}}
 
 const facts={space:'Earth is the third planet from the Sun. Source: NASA Science, science.nasa.gov/earth/facts/',math:'One kilometer equals 1,000 meters. Source: NIST, nist.gov/pml/owm',biology:'Living systems interact with their environment. Educator review recommended.'};
@@ -57,14 +57,14 @@ gl.attachShader(boardProgram,shader(gl.FRAGMENT_SHADER,'precision mediump float;
 gl.linkProgram(boardProgram);if(!gl.getProgramParameter(boardProgram,gl.LINK_STATUS))throw Error('Whiteboard shader failed');
 boardBuffer=gl.createBuffer();boardTexture=gl.createTexture();
 }
-const key=[$('topic').value,$('level').value,answerIndex,feedback].join('|');
+const key=[$('topic').value,$('level').value,answerIndex,feedback,completed.size].join('|');
 gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,boardTexture);
 if(key!==boardKey){
 const c=document.createElement('canvas');c.width=1024;c.height=512;const ctx=c.getContext('2d');
 ctx.fillStyle='#edf8ff';ctx.fillRect(0,0,1024,512);ctx.fillStyle='#16334b';ctx.font='bold 48px sans-serif';ctx.fillText('UNIVERSE ONE | '+$('topic').selectedOptions[0].text,40,70);
-ctx.font='32px sans-serif';ctx.fillText($('level').value+' — Sample lesson',40,135);
+ctx.font='32px sans-serif';ctx.fillText($('level').value+' | XP: '+(completed.size*100)+' / 300',40,135);
 let line='',y=210;for(const word of facts[$('topic').value].split(' ')){if(ctx.measureText(line+word).width>940){ctx.fillText(line,40,y);y+=44;line=''}line+=word+' '}ctx.fillText(line,40,y);
-const item=questions[$('topic').value];ctx.font='bold 29px sans-serif';ctx.fillText(item.q,40,350);ctx.font='28px sans-serif';ctx.fillText('Selected: '+item.answers[answerIndex]+' | Grip: change answer',40,390);ctx.fillText(feedback||'Right trigger: submit | Left trigger: next',40,445);
+const item=questions[$('topic').value];ctx.font='bold 29px sans-serif';ctx.fillText('Mission: '+item.q,40,350);ctx.font='28px sans-serif';ctx.fillText('Selected: '+item.answers[answerIndex]+' | Grip: change answer',40,390);ctx.fillText(feedback||'Right trigger: submit | Left trigger: next',40,445);
 gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);boardKey=key;
 }
 gl.useProgram(boardProgram);gl.bindBuffer(gl.ARRAY_BUFFER,boardBuffer);
@@ -113,6 +113,7 @@ draw(vp,[tx+dx,-1.24,tz+.045],[.1,.07,.18],[.08,.09,.12,1]);
 draw(vp,[tx-.29,-.27,tz],[.075,.24,.08],navy);
 draw(vp,[tx+.29,-.15+gesture,tz+.07],[.075,.22,.08],navy);
 draw(vp,[tx+.29,.09+gesture,tz+.07],[.08,.06,.08],skin);
+for(let i=0;i<3;i++){const earned=completed.has(topics[i]);draw(vp,[2.35+i*.38,1.2,-7.6],[.13,.13,.08],earned?[.97,.75,.18,1]:[.22,.28,.35,1]);}
 drawBoard(vp);}
 function desktopPreview(){if(!gl)return;gl.disable(gl.SCISSOR_TEST);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,$('scene').width,$('scene').height);const p=new Float32Array([1.2,0,0,0,0,1.8,0,0,0,0,-1.02,-1,0,0,-.2,0]);renderScene(p)}
 async function start(){if(starting||session||!gl)return;starting=true;walkX=0;walkZ=0;lastFrame=0;$('enter').disabled=true;try{session=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor','bounded-floor']});await gl.makeXRCompatible();session.addEventListener('end',()=>{session=null;refSpace=null;if('speechSynthesis' in window)speechSynthesis.cancel();$('exit').disabled=true;$('enter').disabled=false;$('status').textContent='VR session ended.';desktopPreview()});session.addEventListener('select',e=>{if(e.inputSource.handedness==='left'){nextStation()}else{submitAnswer()}});session.addEventListener('squeeze',()=>{answerIndex=(answerIndex+1)%2;feedback='';updateLesson()});baseLayer=new XRWebGLLayer(session,gl);session.updateRenderState({baseLayer});refSpace=await session.requestReferenceSpace('local');$('enter').disabled=true;$('exit').disabled=false;$('status').textContent='VR classroom active. Left trigger: next station. Grip: select answer. Right trigger: submit.';session.requestAnimationFrame(frame)}catch(e){$('status').textContent='VR could not start: '+e.message;$('enter').disabled=false;if(session)await session.end().catch(()=>{});session=null}finally{starting=false}}
