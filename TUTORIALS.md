@@ -51,3 +51,17 @@ Each new feature should include: a plain-language purpose, prerequisites, a numb
 4. Type a subject-related question, such as “What is evaporation?”, and select **Ask**.
 5. If the tutor cannot answer, use the provided lesson or ask a teacher. Do not enter names, passwords, contact information, or student records.
 **Important:** This is a limited offline rule-based assistant, not a generative AI system. It does not personalize lessons, access school accounts, or submit student data.
+
+## Tutor explanation levels
+1. Open `tutor.html`.
+2. Choose **Beginner** for shorter explanations or **More detail** for additional subject vocabulary.
+3. Choose a subject and select **Explain simply**. Hints, practice and typed questions remain limited rule-based features.
+4. Change the level and select **Explain simply** again to compare explanations.
+
+## View anonymous practice in the educator preview
+1. Open `curriculum-workshop.html` and answer one or more practice questions.
+2. Follow the **Anonymous educator preview** link in the same browser tab.
+3. Under **Data source**, choose **Anonymous practice from this browser tab**.
+4. Read the counts. They are not student-level records, classroom analytics, or grades.
+5. To clear the shared counters, choose **Reset sample data** while the anonymous session source is selected. The button label is retained for now but clears the selected session source.
+**Troubleshooting:** A new tab or private window may not share the session data. If there are no answers, the overview may be empty.
