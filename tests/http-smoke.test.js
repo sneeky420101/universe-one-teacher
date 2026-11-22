@@ -13,7 +13,7 @@ test('local server serves app, Quest, manifest, service worker and health secure
     let ready=false;
     for(let i=0;i<60;i++){if(child.exitCode!==null)throw Error('server exited unexpectedly');try{const r=await fetch('http://127.0.0.1:'+port+'/health');if(r.ok){ready=true;break}}catch{}await delay(100)}
     assert.ok(ready,'server did not start');
-    for(const [route,type] of [['/','text/html'],['/quest.html','text/html'],['/3d-campus.html','text/html'],['/tutorial.html','text/html'],['/manifest.webmanifest','application/manifest+json'],['/sw.js','text/javascript'],['/icon.svg','image/svg+xml'],['/curriculum/catalog.json','application/json']]){
+    for(const [route,type] of [['/','text/html'],['/quest.html','text/html'],['/3d-campus.html','text/html'],['/tutorial.html','text/html'],['/manifest.webmanifest','application/manifest+json'],['/sw.js','text/javascript'],['/icon.svg','image/svg+xml'],['/curriculum/catalog.json','application/json'],['/workshops/circuit-lab.js','text/javascript'],['/engineering-lab.html','text/html'],['/metaverse.html','text/html'],['/workshop-3d.html','text/html']]){
       const res=await fetch('http://127.0.0.1:'+port+route);
       assert.equal(res.status,200,route);
       assert.ok(res.headers.get('content-type')?.includes(type),route);
@@ -22,5 +22,9 @@ test('local server serves app, Quest, manifest, service worker and health secure
     }
     const missing=await fetch('http://127.0.0.1:'+port+'/not-a-page');
     assert.equal(missing.status,404);
+    const home=await fetch('http://127.0.0.1:'+port+'/');
+    assert.match(home.headers.get('content-security-policy'),/script-src 'self'/);
+    assert.equal((await fetch('http://127.0.0.1:'+port+'/health',{method:'POST'})).status,405);
+    assert.equal((await fetch('http://127.0.0.1:'+port+'/health',{method:'HEAD'})).status,200);
   }finally{child.kill();await Promise.race([new Promise(resolve=>child.once('exit',resolve)),delay(2000)])}
 });
