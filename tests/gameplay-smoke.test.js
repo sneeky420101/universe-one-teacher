@@ -83,3 +83,11 @@ test('learning quest keeps mobile responsive overrides after base grid rules',()
  assert.match(html.slice(mobile),/\.room\{grid-template-columns:1fr 1fr/);
  assert.match(html.slice(narrow),/\.room\{grid-template-columns:1fr\}/);
 });
+
+test('learning quest prioritizes unfinished challenges and preserves review mode',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/const candidate=\(index\+1\+step\)%r\.questions\.length/);
+ assert.match(html,/completed\[r\.id\+'-'\+candidate\]!==true/);
+ assert.match(html,/let next=\(index\+1\)%r\.questions\.length/);
+ assert.match(html,/index=next;answered=false;render\(\)/);
+});
