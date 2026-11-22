@@ -40,3 +40,16 @@ test('malformed connection does not pass', () => {
   const result = lab.submit(start, {edges: [['battery+', 'lamp-in']]});
   assert.equal(result.result.correct, false);
 });
+
+test('extra or duplicate wires cannot pass circuit validation', () => {
+  assert.equal(lab.circuitComplete([...edges, ['battery+', 'lamp-in']]), false);
+  assert.equal(lab.circuitComplete([edges[0], edges[0], edges[2]]), false);
+  assert.equal(lab.circuitComplete([edges[0], edges[1], ['lamp-out', 'lamp-out']]), false);
+  assert.equal(lab.circuitComplete(null), false);
+});
+test('connection step rejects an extra shortcut wire', () => {
+  const ready = lab.submit(lab.createSession(), {components: ['battery','switch','lamp']}).session;
+  const attempt = lab.submit(ready, {edges: [...edges, ['battery+', 'lamp-in']]});
+  assert.equal(attempt.result.correct, false);
+  assert.equal(attempt.session.step, 1);
+});
