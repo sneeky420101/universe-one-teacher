@@ -88,7 +88,32 @@ draw(vp,[0,.55,-3.3],[1.45,.8,.06],[.12,.27,.48,1]);
 const t=topics.indexOf($('topic').value);
 draw(vp,[0,0,-2.6],[.3,.3,.3],t===0?[.25,.63,.94,1]:t===1?[.98,.69,.21,1]:[.35,.85,.5,1]);
 draw(vp,[-.9,0,-2.9],[.17,.17,.17],[.95,.72,.3,1]);
-draw(vp,[.9,0,-2.9],[.17,.17,.17],[.82,.45,.88,1]);drawBoard(vp);}
+draw(vp,[.9,0,-2.9],[.17,.17,.17],[.82,.45,.88,1]);// Classroom furnishings and stylized instructor, not a conversational AI.
+const navy=[.13,.24,.39,1],skin=[.65,.45,.32,1],wood=[.53,.35,.2,1];
+draw(vp,[-2.8,-.65,-6.9],[.65,.08,.42],wood);
+draw(vp,[-2.8,-1.08,-6.9],[.55,.35,.34],wood);
+draw(vp,[0,1.57,-4],[4,.04,4],[.45,.5,.58,1]);
+for(const z of [-2,-4,-6])draw(vp,[0,1.49,z],[1.1,.035,.17],[.95,.96,.88,1]);
+for(const z of [-2,-4,-6]){
+draw(vp,[3.89,.25,z],[.025,.65,.72],[.47,.72,.85,1]);
+draw(vp,[3.85,.25,z],[.025,.62,.035],[.85,.87,.9,1]);
+}
+const tx=-2.7,tz=-5.9;
+const talking=typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking;
+const gesture=talking?Math.sin(performance.now()/240)*.12:0;
+draw(vp,[tx,-.25,tz],[.23,.36,.15],navy);
+draw(vp,[tx,.24,tz],[.16,.18,.15],skin);
+draw(vp,[tx,.4,tz],[.17,.055,.16],[.19,.12,.08,1]);
+for(const dx of [-.065,.065])draw(vp,[tx+dx,.27,tz+.151],[.022,.018,.008],[.08,.10,.12,1]);
+draw(vp,[tx,.16+gesture*.08,tz+.151],[.045,talking?.025:.012,.008],[.28,.12,.1,1]);
+for(const dx of [-.13,.13]){
+draw(vp,[tx+dx,-.91,tz],[.095,.3,.11],navy);
+draw(vp,[tx+dx,-1.24,tz+.045],[.1,.07,.18],[.08,.09,.12,1]);
+}
+draw(vp,[tx-.29,-.27,tz],[.075,.24,.08],navy);
+draw(vp,[tx+.29,-.15+gesture,tz+.07],[.075,.22,.08],navy);
+draw(vp,[tx+.29,.09+gesture,tz+.07],[.08,.06,.08],skin);
+drawBoard(vp);}
 function desktopPreview(){if(!gl)return;gl.disable(gl.SCISSOR_TEST);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,$('scene').width,$('scene').height);const p=new Float32Array([1.2,0,0,0,0,1.8,0,0,0,0,-1.02,-1,0,0,-.2,0]);renderScene(p)}
 async function start(){if(starting||session||!gl)return;starting=true;walkX=0;walkZ=0;lastFrame=0;$('enter').disabled=true;try{session=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor','bounded-floor']});await gl.makeXRCompatible();session.addEventListener('end',()=>{session=null;refSpace=null;if('speechSynthesis' in window)speechSynthesis.cancel();$('exit').disabled=true;$('enter').disabled=false;$('status').textContent='VR session ended.';desktopPreview()});session.addEventListener('select',e=>{if(e.inputSource.handedness==='left'){nextStation()}else{submitAnswer()}});session.addEventListener('squeeze',()=>{answerIndex=(answerIndex+1)%2;feedback='';updateLesson()});baseLayer=new XRWebGLLayer(session,gl);session.updateRenderState({baseLayer});refSpace=await session.requestReferenceSpace('local');$('enter').disabled=true;$('exit').disabled=false;$('status').textContent='VR classroom active. Left trigger: next station. Grip: select answer. Right trigger: submit.';session.requestAnimationFrame(frame)}catch(e){$('status').textContent='VR could not start: '+e.message;$('enter').disabled=false;if(session)await session.end().catch(()=>{});session=null}finally{starting=false}}
 let walkX=0,walkZ=0,lastFrame=0;
