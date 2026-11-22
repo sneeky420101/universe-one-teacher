@@ -48,3 +48,11 @@ test('learning quest only restores and counts recognized challenge IDs',()=>{
  assert.match(html,/if\(raw\[id\]===true\)completed\[id\]=true/);
  assert.match(html,/rooms\.reduce\(\(n,r\)=>n\+r\.questions\.filter/);
 });
+
+test('learning quest lets students retry wrong answers before advancing',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/if\(right\)\{answered=true;/);
+ assert.match(html,/\$\('options'\)\.children\[i\]\.disabled=true/);
+ assert.match(html,/Not quite\. Try another answer\./);
+ assert.match(html,/\$\('next'\)\.hidden=true/);
+});
