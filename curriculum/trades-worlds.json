@@ -1,0 +1,116 @@
+{
+  "schemaVersion": "1.0.0",
+  "publicationStatus": "simulation-design-only",
+  "safetyPolicy": {
+    "noRealPatientCareTrainingCertification": true,
+    "clinicalProceduresRequireLicensedEducatorAndValidatedSimulator": true,
+    "heavyEquipmentRequiresSupervisedRealWorldCertification": true,
+    "knowledgeMustPassEvidenceGate": true
+  },
+  "worlds": [
+    {
+      "id": "auto",
+      "name": "Automotive Service Garage",
+      "environment": "Interactive vehicle service bay",
+      "activities": [
+        {
+          "id": "auto-inspection",
+          "name": "Vehicle inspection",
+          "interaction": "Inspect tires, fluid levels, lights and dashboard alerts; record findings",
+          "assessment": "Identify faults and justify safe next steps"
+        },
+        {
+          "id": "auto-diagnostics",
+          "name": "Diagnostic reasoning",
+          "interaction": "Select test points and interpret simulated diagnostic signals",
+          "assessment": "Match symptoms to evidence without guessing"
+        }
+      ]
+    },
+    {
+      "id": "medicine",
+      "name": "Clinical Skills University",
+      "environment": "Virtual hospital with anatomy and simulation labs",
+      "activities": [
+        {
+          "id": "anatomy-heart",
+          "name": "3D heart anatomy",
+          "interaction": "Rotate and label heart chambers, valves and major vessels; explore circulation",
+          "assessment": "Identify anatomical structures accurately"
+        },
+        {
+          "id": "anatomy-brain",
+          "name": "3D brain anatomy",
+          "interaction": "Explore brain regions and their basic functions on an anatomical model",
+          "assessment": "Identify key regions and their functions"
+        },
+        {
+          "id": "surgery-observation",
+          "name": "Operating room simulation",
+          "interaction": "Practice team roles, sterile-field awareness, patient safety checks and observe conceptual cardiac and neurosurgical simulations",
+          "assessment": "Recognize safety checkpoints; no unsupervised surgical procedure instructions"
+        }
+      ],
+      "clinicalNotice": "Simulation for education only; not a substitute for accredited medical education, clinical supervision or surgical credentialing."
+    },
+    {
+      "id": "heavy-equipment",
+      "name": "Construction Equipment Training Yard",
+      "environment": "Virtual construction site with excavator, loader and crane models",
+      "activities": [
+        {
+          "id": "site-hazards",
+          "name": "Worksite safety inspection",
+          "interaction": "Walk the site, flag hazards, check exclusion zones and identify spotter signals",
+          "assessment": "Detect all critical hazards before simulated startup"
+        },
+        {
+          "id": "machine-controls",
+          "name": "Equipment controls familiarization",
+          "interaction": "Identify virtual cab controls, read warning indicators and rehearse shutdown in a risk-free simulation",
+          "assessment": "Choose safe responses to fault scenarios"
+        }
+      ],
+      "safetyNotice": "No authorization to operate physical equipment; follow applicable employer and regulatory training requirements."
+    },
+    {
+      "id": "electrical",
+      "name": "Electrical Trades Lab",
+      "environment": "De-energized virtual wiring bench",
+      "activities": [
+        {
+          "id": "circuit-concepts",
+          "name": "Circuit diagnosis",
+          "interaction": "Build low-voltage simulated circuits and use a virtual meter",
+          "assessment": "Explain open and closed circuits and fault isolation"
+        }
+      ]
+    },
+    {
+      "id": "aviation",
+      "name": "Aircraft Maintenance Hangar",
+      "environment": "Virtual aircraft inspection bay",
+      "activities": [
+        {
+          "id": "walkaround",
+          "name": "Aircraft inspection principles",
+          "interaction": "Inspect a training aircraft model and document simulated discrepancies",
+          "assessment": "Recognize safety-critical reporting and escalation"
+        }
+      ]
+    },
+    {
+      "id": "culinary",
+      "name": "Culinary School Kitchen",
+      "environment": "Interactive food preparation stations",
+      "activities": [
+        {
+          "id": "food-safety",
+          "name": "Food safety and kitchen workflow",
+          "interaction": "Spot cross-contamination hazards and organize safe workstation flow",
+          "assessment": "Identify correct hygiene and storage decisions"
+        }
+      ]
+    }
+  ]
+}
