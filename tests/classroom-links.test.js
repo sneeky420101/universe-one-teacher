@@ -15,8 +15,8 @@ test('all declared classroom pages and relative HTML links exist',()=>{
       if(!href||href.startsWith('#')||/^(https?:|mailto:|tel:|data:|javascript:|\/\/)/i.test(href))continue;
       const pathname=href.split(/[?#]/)[0];
       if(!pathname)continue;
-      const destination=path.resolve(path.dirname(full),decodeURIComponent(pathname));
-      assert.ok(destination.startsWith(root+path.sep),'link escapes repository in '+page+': '+href);
+      const destination=pathname.startsWith('/')?path.resolve(root,'.'+decodeURIComponent(pathname)):path.resolve(path.dirname(full),decodeURIComponent(pathname));
+      assert.ok(destination===root||destination.startsWith(root+path.sep),'link escapes repository in '+page+': '+href);
       assert.ok(fs.existsSync(destination),'broken link in '+page+': '+href);
     }
   }
