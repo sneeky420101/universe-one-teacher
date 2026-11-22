@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Universe One Virtual College — Course Explorer</title><style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#0b1323;color:#f2f6ff}body{max-width:1050px;margin:auto;padding:24px}a{color:#8de8ff}header{border-bottom:1px solid #52647b;padding-bottom:16px}h1{font-size:clamp(1.7rem,4vw,2.8rem)}.notice{border-left:4px solid #ffc46b;background:#273040;padding:15px;margin:18px 0}.layout{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:18px}.card{background:#18243a;border:1px solid #455978;border-radius:14px;padding:18px}.card button{background:#7de4e9;color:#071424;border:0;border-radius:9px;padding:11px 16px;font-weight:700;cursor:pointer}.card button:focus-visible,a:focus-visible{outline:3px solid #ffc46b;outline-offset:3px}.muted{color:#bdcde3}li{margin:9px 0}#detail{margin-top:24px}#status{min-height:1.5em}</style></head><body>
+<header><a href="./index.html">← School home</a> · <a href="./learning-quest.html">Learning Quest</a><h1>Universe One Virtual College</h1><p>Course explorer · Academic prototype · VOLTFRAME Studios</p></header>
+<div class="notice" role="note"><strong>Not an accredited or authorized college.</strong> Courses are draft, noncredit demonstrations. No official enrollment, grades, transcripts, degrees, or financial transactions are available.</div>
+<main><h2>Explore draft courses</h2><p class="muted">Explore learning outcomes, modules, and practice assessments. This prototype does not collect or store student identity or academic records.</p><p id="status" role="status" aria-live="polite">Loading course catalog…</p><div class="layout" id="courses"></div><section id="detail" aria-live="polite" aria-label="Selected course"></section></main>
+<footer><p class="muted">© 2026 VOLTFRAME Studios. Academic recognition and credit are not offered.</p></footer>
+<script>
+'use strict';
+const coursesEl=document.getElementById('courses'),detailEl=document.getElementById('detail'),statusEl=document.getElementById('status');
+let catalog=null;
+function element(tag,text){const e=document.createElement(tag);if(text!==undefined)e.textContent=String(text);return e}
+function showCourse(id){
+ const c=catalog&&catalog.courses.find(item=>item.id===id);
+ if(!c)return;
+ detailEl.replaceChildren();
+ detailEl.append(element('h2',c.title),element('p','Course ID: '+c.id+' · Draft · Noncredit'));
+ detailEl.append(element('h3','Learning outcomes'));
+ const outcomes=element('ul');for(const outcome of c.learningOutcomes)outcomes.append(element('li',outcome));detailEl.append(outcomes);
+ detailEl.append(element('h3','Modules'));
+ const modules=element('ol');for(const m of c.modules)modules.append(element('li',m.title));detailEl.append(modules);
+ detailEl.append(element('h3','Practice assessments'));
+ const list=element('ul');for(const id of c.assessmentIds){const a=catalog.assessments.find(item=>item.id===id);if(a)list.append(element('li',a.id+' — '+a.kind+' (not an official grade)'))}detailEl.append(list);
+ const link=element('a','Open the game-based Learning Quest');link.href='./learning-quest.html';detailEl.append(link);
+ detailEl.scrollIntoView({behavior:'smooth',block:'start'});
+}
+async function loadCatalog(){
+ try{
+  const response=await fetch('./college/catalog.json',{cache:'no-store'});
+  if(!response.ok)throw Error('Catalog request failed');
+  const data=await response.json();
+  if(data.status!=='planning-not-authorized-or-accredited'||!Array.isArray(data.courses)||!Array.isArray(data.assessments))throw Error('Unexpected catalog');
+  catalog=data;coursesEl.replaceChildren();
+  for(const c of data.courses){
+   const card=element('article');card.className='card';card.append(element('h3',c.title),element('p',c.id+' · '+c.subject),element('p','Draft noncredit course · '+c.modules.length+' module(s)'));
+   const button=element('button','Explore course');button.type='button';button.setAttribute('aria-label','Explore '+c.title);button.addEventListener('click',()=>showCourse(c.id));card.append(button);coursesEl.append(card);
+  }
+  statusEl.textContent=data.courses.length+' draft courses available for exploration.';
+ }catch(error){statusEl.textContent='The college catalog is temporarily unavailable. No academic records were changed.'}
+}
+loadCatalog();
+</script></body></html>
