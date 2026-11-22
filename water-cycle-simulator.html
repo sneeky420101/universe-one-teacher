@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Water Cycle Simulator | Universe One AI Teacher</title>
+<style>:root{color-scheme:dark}body{margin:0;background:#101b33;color:#f4f7ff;font:16px system-ui}header,main,footer{max-width:850px;margin:auto;padding:18px}a{color:#b5e2ff}section{background:#1b2a49;border:1px solid #7185aa;border-radius:15px;padding:18px;margin:14px 0}button,select{font:inherit;padding:12px;background:#29446c;border:2px solid #b7c9e2;border-radius:9px;color:white;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #82f5cc;outline-offset:3px}.controls{display:flex;gap:14px;flex-wrap:wrap}.controls label{display:grid;gap:7px}input[type=range]{width:min(280px,80vw)}.scene{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0}.stage{padding:16px 8px;text-align:center;border:2px solid #8196b9;border-radius:12px;background:#263d61;min-height:105px}.stage.active{border-color:#8bffce;background:#155e58}.stage strong{display:block;font-size:1.15rem;margin:8px 0}#feedback{min-height:3em}small{color:#d2dcef}@media(max-width:500px){header,main,footer{padding:12px}section{padding:12px}.scene{grid-template-columns:1fr}.stage{min-height:65px}}</style></head>
+<body><header><a href="./learning-quest.html">← Learning Quest</a><h1>💧 Hands-On Water Cycle Simulator</h1><p>Change temperature and humidity to investigate how water moves through evaporation, condensation, and precipitation.</p></header><main>
+<section><h2>Experiment controls</h2><div class="controls"><label>Temperature <output id="temperatureValue">25°C</output><input id="temperature" type="range" min="0" max="40" step="5" value="25"></label><label>Humidity <output id="humidityValue">50%</output><input id="humidity" type="range" min="0" max="100" step="10" value="50"></label></div><p><button id="simulate" type="button">Run simulation step</button> <button id="reset" type="button">Reset experiment</button></p><div class="scene" aria-label="Water cycle process diagram"><div id="evaporation" class="stage"><span aria-hidden="true">☀️</span><strong>Evaporation</strong><span>Liquid to vapor</span></div><div id="condensation" class="stage"><span aria-hidden="true">☁️</span><strong>Condensation</strong><span>Vapor to droplets</span></div><div id="precipitation" class="stage"><span aria-hidden="true">🌧️</span><strong>Precipitation</strong><span>Water falls</span></div></div><p id="observation" role="status" aria-live="polite">Adjust the controls, then run a simulation step.</p><p id="stepCount">Steps completed: 0</p><p><small>This is a simplified teaching model, not a physical weather forecast. Real water cycles depend on many factors including air movement, pressure, sunlight, and cloud formation.</small></p></section>
+<section><h2>Make a prediction</h2><p>Which process changes liquid water into water vapor?</p><div class="controls"><button type="button" data-answer="evaporation">Evaporation</button><button type="button" data-answer="condensation">Condensation</button><button type="button" data-answer="precipitation">Precipitation</button></div><p id="feedback" role="status" aria-live="polite"></p></section>
+<section><h2>Explore the science</h2><p>Warmth can increase evaporation. Condensation occurs when moist air cools enough for water vapor to form droplets. When droplets or ice particles in clouds grow and fall, precipitation occurs.</p><p><a href="https://www.usgs.gov/special-topics/water-science-school/science/water-cycle" target="_blank" rel="noopener noreferrer">USGS Water Science School — Water Cycle</a></p><p>This original classroom prototype has not been verified against an official school curriculum.</p></section></main><footer>© 2026 Brandon Hastings · VOLTFRAME Studios. All rights reserved.</footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let steps=0;
+function model(temperature,humidity){
+ if(temperature>=25&&humidity<80)return {stage:'evaporation',message:'Warm conditions with room for more water vapor favor evaporation. Water can enter the air as vapor.'};
+ if(humidity>=80&&temperature<=20)return {stage:'condensation',message:'Cooler, humid conditions can favor condensation when the air reaches saturation. Droplets may form.'};
+ if(humidity>=90&&temperature>20)return {stage:'precipitation',message:'Very humid conditions may support cloud development, but rain also requires cloud droplets to grow. Rain is not guaranteed.'};
+ return {stage:'condensation',message:'Water continues cycling. Change temperature or humidity to explore conditions that favor different processes.'};
+}
+function run(){
+ const temperature=Number($('temperature').value),humidity=Number($('humidity').value);
+ $('temperatureValue').textContent=temperature+'°C';$('humidityValue').textContent=humidity+'%';
+ const result=model(temperature,humidity);steps++;
+ for(const id of ['evaporation','condensation','precipitation'])$(''+id).classList.toggle('active',id===result.stage);
+ $('observation').textContent=result.message;
+ $('stepCount').textContent='Steps completed: '+steps;
+}
+$('simulate').onclick=run;
+$('reset').onclick=()=>{$('temperature').value='25';$('humidity').value='50';steps=0;$('temperatureValue').textContent='25°C';$('humidityValue').textContent='50%';$('observation').textContent='Adjust the controls, then run a simulation step.';$('stepCount').textContent='Steps completed: 0';for(const id of ['evaporation','condensation','precipitation'])$(id).classList.remove('active')};
+for(const input of ['temperature','humidity'])$(input).oninput=()=>{$('temperatureValue').textContent=$('temperature').value+'°C';$('humidityValue').textContent=$('humidity').value+'%'};
+document.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{$('feedback').textContent=button.dataset.answer==='evaporation'?'Correct! Evaporation changes liquid water into water vapor.':'Try again. Look for the process that changes liquid water into vapor.'});
+</script></body></html>
