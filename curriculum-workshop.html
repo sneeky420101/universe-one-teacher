@@ -6,13 +6,16 @@
 <p><a href="index.html">Return to classroom</a> · <a href="TUTORIALS.md">Beginner tutorials</a></p><details class="panel"><summary><strong>How to use this workshop — 4 easy steps</strong></summary><ol><li>Choose Fractions or Water cycle from the menu.</li><li>Read the learning objective and open the source link.</li><li>Answer the practice question.</li><li>Read the feedback and retry if needed.</li></ol><p>No school grade is submitted. This is a practice preview.</p></details><section id="tour" class="panel" aria-label="Guided tutorial" hidden><h2>Guided tour <span id="tour-count"></span></h2><p id="tour-instruction" aria-live="polite"></p><button type="button" id="tour-back">Back</button><button type="button" id="tour-next">Next</button><button type="button" id="tour-exit">Exit tutorial</button></section><p><button type="button" id="tour-start">Start guided tutorial</button></p><label for="lesson">Choose a sample workshop</label><select id="lesson"></select>
 <section class="panel" aria-live="polite"><h2 id="heading"></h2><p id="objective"></p><p id="source"></p></section>
 <section class="panel"><h2>Practice check</h2><p id="question"></p><div id="choices" role="group" aria-label="Answer choices"></div><p id="feedback" role="status"></p></section>
-</main><script>
+<section class="panel"><h2>Your practice progress (this session only)</h2><p id="progress" role="status">No answers yet.</p><button type="button" id="reset-progress">Reset practice progress</button><p class="muted">Practice counters stay in this page until it is closed or reloaded. They are not school grades or shared with teachers.</p></section></main><script>
 "use strict";
 const samples=[
 {id:"fractions",title:"Fractions workshop",objective:"Explain why two halves equal one whole.",source:"https://www.khanacademy.org/math/arithmetic/fraction-arithmetic",question:"How many halves make one whole?",choices:["One","Two","Three"],answer:1,explanation:"Two equal halves combine to make one whole."},
 {id:"water",title:"Water cycle workshop",objective:"Identify evaporation, condensation and precipitation.",source:"https://www.usgs.gov/special-topics/water-science-school/science/water-cycle",question:"What is the process called when liquid water becomes water vapor?",choices:["Evaporation","Precipitation","Condensation"],answer:0,explanation:"Evaporation changes liquid water into water vapor."}
 ];
 const $=id=>document.getElementById(id);
+const practice={};
+function showProgress(){const rows=Object.entries(practice);const attempts=rows.reduce((n,[,v])=>n+v.attempts,0);const correct=rows.reduce((n,[,v])=>n+v.correct,0);$("progress").textContent=attempts?`${correct} correct out of ${attempts} attempts across ${rows.length} workshop(s).`:"No answers yet.";}
+$("reset-progress").addEventListener("click",()=>{for(const key of Object.keys(practice))delete practice[key];showProgress()});
 for(const item of samples){const opt=document.createElement("option");opt.value=item.id;opt.textContent=item.title;$("lesson").append(opt)}
 function render(){
  const item=samples.find(x=>x.id===$("lesson").value)||samples[0];
@@ -20,10 +23,10 @@ function render(){
  const link=document.createElement("a");link.href=item.source;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Read external educational source";
  $("source").replaceChildren(link);$("choices").replaceChildren();$("feedback").textContent="";
  item.choices.forEach((choice,i)=>{const b=document.createElement("button");b.type="button";b.textContent=choice;b.addEventListener("click",()=>{
- const correct=i===item.answer;$("feedback").className=correct?"correct":"incorrect";$("feedback").textContent=(correct?"Correct. ":"Try again. ")+item.explanation;
+ const correct=i===item.answer;const record=practice[item.id]||(practice[item.id]={attempts:0,correct:0});record.attempts++;if(correct)record.correct++;showProgress();$("feedback").className=correct?"correct":"incorrect";$("feedback").textContent=(correct?"Correct. ":"Try again. ")+item.explanation;
  });$("choices").append(b)});
 }
-$("lesson").addEventListener("change",render);render();
+$("lesson").addEventListener("change",render);render();showProgress();
 const steps=[
 {target:"lesson",message:"Step 1: Choose a workshop from this menu. Start with Fractions."},
 {target:"objective",message:"Step 2: Read the learning objective to understand what you will practice."},
