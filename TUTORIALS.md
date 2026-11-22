@@ -65,3 +65,17 @@ Each new feature should include: a plain-language purpose, prerequisites, a numb
 4. Read the counts. They are not student-level records, classroom analytics, or grades.
 5. To clear the shared counters, choose **Reset sample data** while the anonymous session source is selected. The button label is retained for now but clears the selected session source.
 **Troubleshooting:** A new tab or private window may not share the session data. If there are no answers, the overview may be empty.
+
+## Spanish tutor explanation preview
+1. Open `tutor.html`.
+2. Set **Language for explanations** to **Español (preview)**.
+3. Choose **Beginner** or **More detail**, then select **Explain simply**.
+4. Switch to **English** to use the current hint, practice, and typed-question features.
+**Limitations:** Spanish is available only for the two sample explanation topics. This is not full multilingual tutoring or verified translated national curriculum.
+
+## Dashboard reset and privacy
+1. Open `educator-dashboard.html`.
+2. Choose **Fictional sample data** to inspect demonstration numbers; **Reset fictional sample data** restores the examples.
+3. Choose **Anonymous practice from this browser tab** to see practice counters from the workshop in the same tab.
+4. Select **Clear this tab’s practice counters** to delete those temporary counters.
+**Important:** This is not a student roster, gradebook, or school analytics system.
