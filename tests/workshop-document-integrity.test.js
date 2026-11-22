@@ -1,0 +1,3 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('page contains exactly one document end and a script end',()=>{assert.equal((html.match(/<\/html>/g)||[]).length,1);assert.equal((html.match(/<\/script>/g)||[]).length,1);assert.equal(html.trim().endsWith('</html>'),true)});
+test('guided steps and practice completion persist separately',()=>{for(const key of ['universe-workshop-guided-v1','universe-workshop-practice-v1']){assert.ok(html.includes('localStorage.setItem(\''+key+'\''));assert.ok(html.includes('localStorage.getItem(\''+key+'\''))}});

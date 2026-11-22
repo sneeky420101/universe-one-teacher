@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('all four workshops offer adjustable experiment scenarios',()=>{for(const token of ['basketball:{prompt:','farming:{prompt:','manufacturing:{prompt:','life:{prompt:','id="experimentValue"','id="experimentRun"'])assert.ok(html.includes(token),token)});
+test('experiment outcomes use a numeric model and disclose simplifications',()=>{for(const token of ['Number($(\'experimentValue\').value)','illustrative','simplified','simulated','experimentConfig'])assert.ok(html.includes(token),token)});
+test('knowledge checks require experiments',()=>{assert.match(html,/!experimentDone\[key\]/);assert.match(html,/Run the interactive experiment before checking your answer/)});

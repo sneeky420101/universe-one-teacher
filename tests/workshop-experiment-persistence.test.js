@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('experiment state saves after running and resetting',()=>{assert.equal((html.match(/localStorage\.setItem\('universe-workshop-experiments-v1'/g)||[]).length,3)});
+test('experiment state restores before first render',()=>{const restore=html.indexOf("localStorage.getItem('universe-workshop-experiments-v1')");const boot=html.lastIndexOf("window.addEventListener('resize',resize);render();resize();");assert.ok(restore>0&&restore<boot)});
+test('restored values and results are validated',()=>{for(const fragment of ['Number.isFinite(value.visual)','Number.isFinite(value)','experimentResults[key]','delete experimentDone[key]'])assert.ok(html.includes(fragment),fragment)});

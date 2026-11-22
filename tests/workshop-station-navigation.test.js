@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('station buttons are present and rendered for each lesson station',()=>{assert.match(html,/id="stationButtons"/);assert.match(html,/lesson\.stations\.forEach\(\(station,i\)=>/);assert.match(html,/button\.onclick=\(\)=>\{choice=-1;selected=i;render\(\);announceCurrentStation\(\)\}/)});
+test('station selection communicates selected state to assistive technology',()=>{assert.match(html,/button\.setAttribute\('aria-pressed',String\(i===selected\)\)/);assert.match(html,/role="group" aria-label="Choose a learning station"/)});
+test('mobile controls and slider focus are explicitly styled',()=>{assert.match(html,/max-width:480px/);assert.match(html,/min-height:44px/);assert.match(html,/input:focus-visible/)});

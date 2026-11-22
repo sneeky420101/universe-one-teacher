@@ -1,0 +1,4 @@
+const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('guided procedures include navigation and accessible status',()=>{for(const token of ['id="stepStatus"','id="stepBack"','id="stepForward"','aria-live="polite"','stepPositions'])assert.ok(html.includes(token),token)});
+test('knowledge checks require completed guided steps',()=>{assert.match(html,/\$\('check'\)\.disabled=checked\|\|stepIndex<s\.steps\.length/);assert.match(html,/Review each guided step before checking your answer/)});
+test('guided steps support going backward without negative penalties',()=>{assert.match(html,/\$\('stepBack'\)\.onclick/);assert.match(html,/Math\.max\(0,\(stepPositions\[key\]\|\|0\)-1\)/)});
