@@ -7,3 +7,5 @@ test('medical simulation avoids claims of surgical credentialing',()=>{assert.ma
 test('trades catalog is served as JSON',()=>assert.match(server,/file==='curriculum\/trades-worlds\.json'/));
 
 test('automotive and excavator manipulation controls are wired',()=>{for(const term of ['hoodOpen','wheelRemoved','boomAngle','bucketAngle','id="action"','addEventListener(\'click\''])assert.ok(workshop.includes(term),term)});
+
+test('guided mission offers keyboard-accessible object selection and progression',()=>{assert.match(workshop,/id="nextTarget"/);assert.match(workshop,/function selectPart\(part\)/);assert.match(workshop,/Next objective: inspect/);assert.match(workshop,/Mission complete:/)});
