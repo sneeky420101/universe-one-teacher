@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hands-On Fraction Workshop | Universe One</title>
+<style>
+:root{color-scheme:dark}body{margin:0;background:#101b33;color:#f3f6ff;font:16px system-ui}main,header,footer{max-width:800px;margin:auto;padding:18px}a{color:#b5e2ff}section{background:#1b2a49;border:1px solid #6b80a7;border-radius:16px;padding:18px;margin:14px 0}button,select{font:inherit;border:2px solid #b4cbe4;border-radius:9px;padding:12px;background:#29446c;color:white;cursor:pointer}button:focus-visible,select:focus-visible{outline:3px solid #84f4cf;outline-offset:2px}button:disabled{opacity:.6;cursor:default}.controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center}.controls label{display:grid;gap:5px}.bar{display:grid;gap:3px;min-height:78px;margin:16px 0}.part{border:2px solid #c9ddf2;background:#293d5d;border-radius:5px;min-height:64px}.part.filled{background:#54c7a6;border-color:#b3ffe8}.part:focus-visible{outline:3px solid #fff}#feedback{min-height:2.8em}small{color:#cad8eb}#answer{font-size:1.3rem;font-weight:700} @media(max-width:550px){main,header,footer{padding:12px}section{padding:12px}.controls{align-items:stretch}.controls label{flex:1;min-width:110px}}
+</style></head><body><header><a href="./learning-quest.html">← Learning Quest</a><h1>🧩 Hands-On Fraction Workshop</h1><p>Build a fraction by selecting equal pieces. Explore equivalent fractions and practice without a timer.</p></header>
+<main><section><h2>Build your fraction</h2><div class="controls"><label>Equal pieces<select id="denominator"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>8</option><option>10</option><option>12</option></select></label><button type="button" id="clear">Clear pieces</button><button type="button" id="fill">Fill all</button></div><p id="instruction">Select pieces to shade them.</p><div id="bar" class="bar" role="group" aria-label="Fraction pieces"></div><p id="answer" aria-live="polite"></p><p id="equivalent"></p><p><small>Each piece is the same size. The denominator counts all equal pieces; the numerator counts shaded pieces.</small></p></section>
+<section><h2>Practice challenge</h2><p id="challenge"></p><button id="check" type="button">Check my model</button> <button id="new" type="button">New challenge</button><p id="feedback" role="status" aria-live="polite"></p><p id="score" aria-live="polite"></p><p><small>Practice results stay in this page only and are not uploaded or graded.</small></p></section>
+<section><h2>Why this works</h2><p>Fractions describe equal parts of a whole. For example, 2/4 and 1/2 represent the same amount. Select pieces above to see the fraction reduce to its simplest form.</p><p>Reference: <a href="https://www.khanacademy.org/math/arithmetic/fraction-arithmetic" target="_blank" rel="noopener noreferrer">Khan Academy — fractions</a>. This original workshop is a practice prototype, not an accredited course or verified grade-level assessment.</p></section></main><footer>© 2026 Brandon Hastings · VOLTFRAME Studios. All rights reserved.</footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const denominators=[2,3,4,5,6,8,10,12];
+let denominator=4,selected=new Set(),target=2,attempts=0,correct=0,solved=false;
+function gcd(a,b){while(b){const t=a%b;a=b;b=t}return a}
+function simplify(n,d){if(n===0)return '0';const g=gcd(n,d);return n/g+'/'+d/g}
+function render(){
+ const bar=$('bar');bar.replaceChildren();bar.style.gridTemplateColumns='repeat('+denominator+',minmax(0,1fr))';
+ for(let i=0;i<denominator;i++){const b=document.createElement('button');b.type='button';b.className='part'+(selected.has(i)?' filled':'');b.setAttribute('aria-label','Piece '+(i+1)+' of '+denominator+', '+(selected.has(i)?'shaded':'unshaded'));b.setAttribute('aria-pressed',String(selected.has(i)));b.onclick=()=>{if(selected.has(i))selected.delete(i);else selected.add(i);solved=false;render()};bar.append(b)}
+ $('answer').textContent='Shaded: '+selected.size+'/'+denominator;
+ $('equivalent').textContent='Simplified value: '+simplify(selected.size,denominator);
+ $('score').textContent='Challenges solved: '+correct+' of '+attempts+' checked.';
+}
+function resetModel(){selected.clear();solved=false;$('feedback').textContent='';render()}
+function newChallenge(){
+ denominator=denominators[Math.floor(Math.random()*denominators.length)];
+ $('denominator').value=String(denominator);
+ target=1+Math.floor(Math.random()*(denominator-1));
+ resetModel();
+ $('challenge').textContent='Shade exactly '+target+' of '+denominator+' equal pieces.';
+}
+$('denominator').onchange=()=>{denominator=Number($('denominator').value);target=Math.min(target,denominator-1);resetModel();$('challenge').textContent='Shade exactly '+target+' of '+denominator+' equal pieces.'};
+$('clear').onclick=resetModel;
+$('fill').onclick=()=>{selected=new Set(Array.from({length:denominator},(_,i)=>i));solved=false;render()};
+$('new').onclick=newChallenge;
+$('check').onclick=()=>{
+ if(solved){$('feedback').textContent='Already solved! Choose New challenge to practice again.';return}
+ attempts++;
+ if(selected.size===target){correct++;solved=true;$('feedback').textContent='Correct! '+target+'/'+denominator+' is '+simplify(target,denominator)+' in simplest form.'}
+ else $('feedback').textContent='Not quite: you shaded '+selected.size+' pieces. Count the pieces and try again.';
+ render()
+};
+newChallenge();
+</script></body></html>
