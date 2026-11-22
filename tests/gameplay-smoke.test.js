@@ -123,3 +123,12 @@ test('wrong-answer hints are subject-specific and do not reveal the correct opti
  assert.match(html,/\$\('options'\)\.children\[i\]\.disabled=true/);
  assert.match(html,/const hints=\{/);
 });
+
+test('all five learning rooms include accessible three-point study guides',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/<details id="studyGuide"><summary>Open three key ideas to review<\/summary><ul id="studyPoints"><\/ul><\/details>/);
+ assert.match(html,/const studyGuides=\{/);
+ for(const room of ['math','science','geography','reading','space'])assert.match(html,new RegExp(room+":\\['"));
+ assert.match(html,/\$\('studyGuide'\)\.open=false/);
+ assert.match(html,/li\.textContent=point/);
+});
