@@ -22,3 +22,13 @@ test('learning quest includes scoring, progress and reset controls',()=>{
 test('workshop offers tutor navigation',()=>{
  assert.match(read('curriculum-workshop.html'),/href="tutor\.html"/);
 });
+
+test('inline gameplay scripts parse as JavaScript',()=>{
+ const vm=require('node:vm');
+ for(const name of [...modes,'curriculum-workshop.html','tutor.html','educator-dashboard.html']){
+  const html=read(name);
+  const scripts=[...html.matchAll(/<script\\b([^>]*)>([\\s\\S]*?)<\\/script>/gi)]
+   .filter(m=>!/(?:\\bsrc\\s*=|\\btype\\s*=\\s*["'](?:module|application\\/json))/i.test(m[1]));
+  for(const script of scripts)assert.doesNotThrow(()=>new vm.Script(script[2],{filename:name}),name+' contains invalid inline JavaScript');
+ }
+});
