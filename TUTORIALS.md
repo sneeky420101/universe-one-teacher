@@ -79,3 +79,10 @@ Each new feature should include: a plain-language purpose, prerequisites, a numb
 3. Choose **Anonymous practice from this browser tab** to see practice counters from the workshop in the same tab.
 4. Select **Clear this tab’s practice counters** to delete those temporary counters.
 **Important:** This is not a student roster, gradebook, or school analytics system.
+
+## French tutor explanation preview
+1. Open `tutor.html` and select **Français (preview)** under language.
+2. Choose **Beginner** or **More detail** and select **Explain simply**.
+3. Return to **English** for hints, practice questions, and typed questions; those features have not been translated.
+4. Use the external educational reference link to explore the subject.
+**Limitations:** Only two sample subjects have French explanations. Translation and curriculum accuracy require educator review before school use.
