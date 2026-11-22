@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Universe One | Interactive 3D Campus</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#081321;color:#f4f8ff;font:16px system-ui}
+header,main,footer{max-width:1100px;margin:auto;padding:14px 20px}a{color:#9fe8ff}
+#viewport{position:relative;border:1px solid #4e8ba9;border-radius:16px;overflow:hidden;background:#10283b}
+canvas{display:block;width:100%;height:min(65vh,600px);min-height:340px;touch-action:none}
+#hud{position:absolute;top:12px;left:12px;max-width:min(340px,75%);padding:12px;background:#061525dc;border:1px solid #87c9e0;border-radius:10px}
+#hud p{margin:5px 0}#crosshair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;font-size:25px;color:#fff}
+button{font:inherit;background:#194b68;color:white;border:1px solid #8dd8f4;border-radius:10px;padding:12px;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:3px solid #ffdb7c;outline-offset:2px}
+#controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}#controls button{min-width:60px}
+#destinations{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:16px 0}
+#destinations a{display:block;border:1px solid #4c839f;background:#112c42;padding:14px;border-radius:10px}
+.notice{border-left:4px solid #ffce73;padding:12px;background:#253448}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style></head><body><header><h1>Universe One — 3D Learning Campus</h1>
+<nav><a href="./metaverse.html">2D accessible campus</a> · <a href="./index.html">School home</a> · <a href="./quest.html">Experimental VR classroom</a></nav>
+<p class="notice">Experimental real-time 3D campus, built with browser Canvas and raycasting. This is not photorealistic, multiplayer, or a VR headset experience. All rooms remain accessible through the links below.</p></header>
+<main><div id="viewport"><canvas id="scene" aria-label="First-person 3D campus view. Use WASD or arrows to move and turn."></canvas>
+<div id="hud"><strong>Campus explorer</strong><p id="position" role="status">Loading campus…</p><p id="nearby">Find a glowing entrance.</p></div><div id="crosshair" aria-hidden="true">+</div></div>
+<div id="controls" aria-label="3D movement controls"><button data-action="turnLeft">↶ Turn left</button><button data-action="forward">↑ Forward</button><button data-action="back">↓ Back</button><button data-action="turnRight">Turn right ↷</button><button id="enter">Enter nearby classroom</button></div>
+<p>Keyboard: W/S to walk, A/D to strafe, left/right arrows to turn, up/down arrows to walk, E to enter. Drag horizontally on the scene to look around. Movement buttons also work on touchscreens.</p>
+<div id="destinations"><a href="./learning-quest.html">🔬 Science Academy</a><a href="./engineering-lab.html">⚡ Engineering Workshop</a><a href="./college.html">🎓 College Campus</a><a href="./quest.html">🥽 VR Classroom</a><a href="./pathways.html">📚 Learning Pathways</a><a href="./global.html">🌍 Global Learning</a></div>
+</main><footer>© 2026 Brandon Hastings — VOLTFRAME Studios. All rights reserved.</footer>
+<script>
+'use strict';
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d',{alpha:false});
+const pos=document.getElementById('position'),nearby=document.getElementById('nearby');
+const map=[
+'1111111111111111',
+'1000000000000001',
+'1022200000333001',
+'1022200000333001',
+'1022200000333001',
+'1000000000000001',
+'1000000000000001',
+'1000000000000001',
+'1000000000000001',
+'1044400000555001',
+'1044400000555001',
+'1044400000555001',
+'1000000000000001',
+'1000000000000001',
+'1111111111111111'];
+const entrances=[
+{x:4.5,y:3.5,name:'Science Academy',url:'./learning-quest.html'},
+{x:10.5,y:3.5,name:'Engineering Workshop',url:'./engineering-lab.html'},
+{x:4.5,y:10.5,name:'College Campus',url:'./college.html'},
+{x:10.5,y:10.5,name:'VR Classroom',url:'./quest.html'}];
+const colors={1:[55,91,114],2:[39,145,157],3:[180,128,69],4:[112,96,180],5:[92,156,114]};
+let x=8,y=7,angle=-Math.PI/2,last=0,dragX=null;
+const keys=new Set();
+function solid(px,py){const cx=Math.floor(px),cy=Math.floor(py);return !map[cy]||map[cy][cx]!=='0'}
+function step(dx,dy){const nx=x+dx,ny=y+dy,r=.19;if(!solid(nx+Math.sign(dx)*r,y)&&!solid(nx-Math.sign(dx)*r,y))x=nx;if(!solid(x,ny+Math.sign(dy)*r)&&!solid(x,ny-Math.sign(dy)*r))y=ny}
+function move(forward,side){step(Math.cos(angle)*forward-Math.sin(angle)*side,Math.sin(angle)*forward+Math.cos(angle)*side)}
+function closest(){return entrances.map(e=>({...e,d:Math.hypot(x-e.x,y-e.y)})).sort((a,b)=>a.d-b.d)[0]}
+function enter(){const e=closest();if(e.d<3.2)location.href=e.url;else nearby.textContent='Move closer to a classroom building first.'}
+function resize(){const dpr=Math.min(devicePixelRatio||1,1.5),w=canvas.clientWidth,h=canvas.clientHeight;canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}
+function draw(){const w=canvas.width,h=canvas.height;if(!w||!h)return;
+const sky=ctx.createLinearGradient(0,0,0,h*.55);sky.addColorStop(0,'#122b4d');sky.addColorStop(1,'#9cbed0');ctx.fillStyle=sky;ctx.fillRect(0,0,w,h/2);
+const floor=ctx.createLinearGradient(0,h/2,0,h);floor.addColorStop(0,'#527b76');floor.addColorStop(1,'#102d36');ctx.fillStyle=floor;ctx.fillRect(0,h/2,w,h/2);
+const fov=Math.PI/2.8;const stride=Math.max(1,Math.floor(w/520));
+for(let col=0;col<w;col+=stride){const a=angle+Math.atan((2*(col/w)-1)*Math.tan(fov/2));let dist=0,hit=0,side=0;const cs=Math.cos(a),sn=Math.sin(a);
+while(dist<22){dist+=.035;const px=x+cs*dist,py=y+sn*dist;const ix=Math.floor(px),iy=Math.floor(py);const v=map[iy]?.[ix]||'1';if(v!=='0'){hit=Number(v);side=Math.min(px-ix,1-(px-ix),py-iy,1-(py-iy));break}}
+const corrected=Math.max(.15,dist*Math.cos(a-angle));const height=Math.min(h*2,h/(corrected*.68));const base=colors[hit]||colors[1];const shade=Math.max(.22,Math.min(1,1-corrected/24))*(side<.055?.72:1);
+ctx.fillStyle='rgb('+base.map(c=>Math.floor(c*shade)).join(',')+')';ctx.fillRect(col,(h-height)/2,stride+1,height);
+if(height>25){ctx.fillStyle='rgba(170,230,248,.22)';ctx.fillRect(col,(h-height)/2+height*.17,stride+1,Math.max(1,height*.035));ctx.fillRect(col,(h-height)/2+height*.63,stride+1,Math.max(1,height*.025))}
+}
+const e=closest();pos.textContent='Position '+x.toFixed(1)+', '+y.toFixed(1)+' · '+Math.round((angle*180/Math.PI+360)%360)+'°';
+nearby.textContent=e.d<3.2?'Near '+e.name+' — press E or Enter nearby classroom':'Nearest building: '+e.name+' ('+e.d.toFixed(1)+' units)';
+}
+function tick(now){const dt=Math.min(.05,(now-last)/1000||0);last=now;const speed=3*dt,rot=2*dt;
+if(keys.has('ArrowLeft'))angle-=rot;if(keys.has('ArrowRight'))angle+=rot;
+if(keys.has('w')||keys.has('ArrowUp'))move(speed,0);
+if(keys.has('s')||keys.has('ArrowDown'))move(-speed,0);
+if(keys.has('a'))move(0,-speed);if(keys.has('d'))move(0,speed);
+draw();requestAnimationFrame(tick)}
+document.addEventListener('keydown',e=>{if(e.target.closest('a,button,input,textarea'))return;const k=e.key.length===1?e.key.toLowerCase():e.key;if(['w','a','s','d','ArrowUp','ArrowDown','ArrowLeft','ArrowRight','e'].includes(k)){e.preventDefault();if(k==='e')enter();else keys.add(k)}});
+document.addEventListener('keyup',e=>keys.delete(e.key.length===1?e.key.toLowerCase():e.key));
+window.addEventListener('blur',()=>keys.clear());
+const actions={forward:()=>move(.22,0),back:()=>move(-.22,0),turnLeft:()=>angle-=.16,turnRight:()=>angle+=.16};
+document.querySelectorAll('[data-action]').forEach(b=>b.addEventListener('click',()=>{actions[b.dataset.action]();draw()}));
+document.getElementById('enter').addEventListener('click',enter);
+canvas.addEventListener('pointerdown',e=>{dragX=e.clientX;canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(dragX===null)return;angle+=(e.clientX-dragX)*.006;dragX=e.clientX});
+canvas.addEventListener('pointerup',()=>dragX=null);canvas.addEventListener('pointercancel',()=>dragX=null);
+window.addEventListener('resize',resize);resize();requestAnimationFrame(tick);
+</script></body></html>
