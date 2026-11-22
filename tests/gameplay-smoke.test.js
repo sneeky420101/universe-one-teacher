@@ -41,3 +41,10 @@ test('workshop restores validated per-tab practice counters',()=>{
  assert.match(html,/correct<=attempts/);
  assert.match(html,/sessionStorage\.setItem\("universe-one-practice-v1"/);
 });
+
+test('learning quest only restores and counts recognized challenge IDs',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/for\(const r of rooms\)for\(let i=0;i<r\.questions\.length;i\+\+\)/);
+ assert.match(html,/if\(raw\[id\]===true\)completed\[id\]=true/);
+ assert.match(html,/rooms\.reduce\(\(n,r\)=>n\+r\.questions\.filter/);
+});
