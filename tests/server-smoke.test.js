@@ -24,7 +24,7 @@ test('HTTP smoke: school, game, catalog, security and method handling', {timeout
    await new Promise(resolve=>setTimeout(resolve,100));
   }
   assert.ok(ready,'server did not start');
-  for(const [route,type] of [['/', 'text/html'],['/learning-quest.html','text/html'],['/college.html','text/html'],['/college/catalog.json','application/json'],['/curriculum/catalog.json','application/json']]){
+  for(const [route,type] of [['/', 'text/html'],['/learning-quest.html','text/html'],['/college.html','text/html'],['/metaverse.html','text/html'],['/engineering-lab.html','text/html'],['/quest.html','text/html'],['/college/catalog.json','application/json'],['/curriculum/catalog.json','application/json']]){
    const r=await fetch('http://127.0.0.1:'+port+route);
    assert.equal(r.status,200,route);
    assert.match(r.headers.get('content-type')||'',new RegExp(type));
