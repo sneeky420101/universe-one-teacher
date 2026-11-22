@@ -15,3 +15,5 @@ test('3D trade missions include scored, single-attempt scenario assessments',()=
 test('practice mission tracks attempted and correct answers without awarding credentials',()=>{for(const marker of ['attempted=new Set()','correctParts=new Set()','attempted.add(part.i)','correctParts.add(part.i)','id="missionResult"','Practice mission passed:','Reset to retry missed concepts.'])assert.ok(workshop.includes(marker),marker)});
 
 test('revisiting a question cannot inflate the score',()=>{assert.match(workshop,/answered=attempted\.has\(part\.i\)/);assert.match(workshop,/b\.disabled=attempted\.has\(part\.i\)/);assert.match(workshop,/correctCount=correctParts\.size/);assert.match(workshop,/Already answered this attempt/)});
+
+test('POV inspection and focus controls are available to non-VR students',()=>{for(const marker of ['id="pov"','aria-pressed="false"','id="focus"','pov?1.65:1','POV inspection enabled','POV focused on'])assert.ok(workshop.includes(marker),marker)});
