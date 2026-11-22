@@ -90,6 +90,27 @@ draw(vp,[x,-.75,z+.98],[.32,.3,.05],[.18,.42,.55,1]);
 draw(vp,[2.4,-.6,-2.8],[.65,.06,.65],[.16,.32,.45,1]);
 draw(vp,[2.4,.55,-3.3],[1.45,.8,.06],[.12,.27,.48,1]);
 const t=topics.indexOf($('topic').value);
+const palette=[[.18,.34,.6,1],[.27,.48,.48,1],[.22,.5,.3,1],[.45,.42,.22,1],[.38,.28,.55,1],[.52,.34,.23,1]];
+// Distinct subject exhibits share the same classroom shell.
+draw(vp,[-3.85,.65,-5],[.035,.72,1.45],palette[t]);
+if(t===0){
+for(let i=0;i<8;i++){const a=i*.8;draw(vp,[-3.1+Math.cos(a)*.48,.35+i*.065,-4.8+Math.sin(a)*.65],[.08+i*.012,.08+i*.012,.08+i*.012],palette[i%6]);}
+}else if(t===1){
+for(let i=0;i<5;i++)draw(vp,[-3.2,-.55+i*.13,-4.4-i*.19],[.18,.06,.08],palette[i]);
+}else if(t===2){
+for(let i=0;i<3;i++){const z=-4.2-i*.55;draw(vp,[-3.1,-.65,z],[.15,.18,.15],[.58,.35,.18,1]);draw(vp,[-3.1,-.27,z],[.045,.24,.045],[.16,.62,.24,1]);draw(vp,[-3.1,.02,z],[.22,.13,.18],[.22,.75,.32,1]);}
+}else if(t===3){
+draw(vp,[-3.1,.1,-4.7],[.22,.55,.65],[.18,.53,.82,1]);
+for(let i=0;i<4;i++)draw(vp,[-2.86,.3-i*.18,-5+i*.18],[.025,.1,.13],[.3,.65,.28,1]);
+}else if(t===4){
+draw(vp,[-3.1,.3,-4.8],[.06,.8,.06],[.7,.73,.78,1]);
+draw(vp,[-3.1,.95,-4.8],[.3,.05,.25],[.7,.73,.78,1]);
+const phase=(performance.now()%2400)/2400;draw(vp,[-3.1,.8-1.25*phase*phase,-4.8],[.12,.12,.12],[.95,.65,.18,1]);
+}else if(t===5){
+for(let i=0;i<4;i++){draw(vp,[-3.1,-.5+i*.24,-4.8],[.24,.08,.28],[.74,.74,.7,1]);}
+draw(vp,[-3.1,.55,-4.8],[.08,.25,.08],[.85,.85,.82,1]);
+}
+
 draw(vp,[2.4,0,-2.6],[.3,.3,.3],t===0?[.25,.63,.94,1]:t===1?[.98,.69,.21,1]:[.35,.85,.5,1]);
 draw(vp,[1.7,0,-2.9],[.17,.17,.17],[.95,.72,.3,1]);
 draw(vp,[3.1,0,-2.9],[.17,.17,.17],[.82,.45,.88,1]);// Classroom furnishings and stylized instructor, not a conversational AI.
@@ -119,7 +140,7 @@ draw(vp,[tx+.29,-.15+gesture,tz+.07],[.075,.22,.08],navy);
 draw(vp,[tx+.29,.09+gesture,tz+.07],[.08,.06,.08],skin);
 for(let i=0;i<topics.length;i++){const earned=completed.has(topics[i]);draw(vp,[2.15+i*.29,1.2,-7.6],[.13,.13,.08],earned?[.97,.75,.18,1]:[.22,.28,.35,1]);}
 drawBoard(vp);}
-function desktopPreview(){if(!gl)return;gl.disable(gl.SCISSOR_TEST);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,$('scene').width,$('scene').height);const aspect=$('scene').width/$('scene').height;const p=new Float32Array([1.8/aspect,0,0,0,0,1.8,0,0,0,0,-1.02,-1,0,0,-.2,0]);renderScene(multiply(p,translation(-walkX,0,-walkZ)))}
+function desktopPreview(){if(!gl||session)return;gl.disable(gl.SCISSOR_TEST);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,$('scene').width,$('scene').height);const aspect=$('scene').width/$('scene').height;const p=new Float32Array([1.8/aspect,0,0,0,0,1.8,0,0,0,0,-1.02,-1,0,0,-.2,0]);renderScene(multiply(p,translation(-walkX,0,-walkZ)))}
 async function start(){if(starting||session||!gl)return;starting=true;walkX=0;walkZ=0;lastFrame=0;$('enter').disabled=true;try{session=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor','bounded-floor']});await gl.makeXRCompatible();session.addEventListener('end',()=>{session=null;refSpace=null;if('speechSynthesis' in window)speechSynthesis.cancel();$('exit').disabled=true;$('enter').disabled=false;$('status').textContent='VR session ended.';desktopPreview()});session.addEventListener('select',e=>{if(e.inputSource.handedness==='left'){nextStation()}else{submitAnswer()}});session.addEventListener('squeeze',()=>{answerIndex=(answerIndex+1)%2;feedback='';updateLesson()});baseLayer=new XRWebGLLayer(session,gl);session.updateRenderState({baseLayer});refSpace=await session.requestReferenceSpace('local');$('enter').disabled=true;$('exit').disabled=false;$('status').textContent='VR classroom active. Left trigger: next station. Grip: select answer. Right trigger: submit.';session.requestAnimationFrame(frame)}catch(e){$('status').textContent='VR could not start: '+e.message;$('enter').disabled=false;if(session)await session.end().catch(()=>{});session=null}finally{starting=false}}
 let walkX=0,walkZ=0,lastFrame=0;
 function locomotion(time,pose){
@@ -139,6 +160,7 @@ for(const [id,x,z] of [['forward',0,-.35],['back',0,.35],['left',-.35,0],['right
 $('reset').onclick=()=>{walkX=walkZ=0;if(!session)desktopPreview()};
 $('clearProgress').onclick=()=>{if(session||!window.confirm('Reset all sample mission achievements on this device?'))return;completed.clear();feedback=saveProgress()?'Progress reset.':'Progress reset for this session; browser storage unavailable.';updateLesson()};$('submit').onclick=submitAnswer;$('next').onclick=nextStation;$('listen').onclick=speakLesson;
 window.addEventListener('keydown',e=>{if(session||e.altKey||e.ctrlKey||e.metaKey||/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName))return;const d={w:[0,-.15],ArrowUp:[0,-.15],s:[0,.15],ArrowDown:[0,.15],a:[-.15,0],ArrowLeft:[-.15,0],d:[.15,0],ArrowRight:[.15,0]}[e.key];if(d){e.preventDefault();move(...d)}});
+let previewTick=0;function previewLoop(now){requestAnimationFrame(previewLoop);if(!session&&gl&&document.visibilityState==='visible'&&now-previewTick>66&&($('topic').value==='physics'||(typeof speechSynthesis!=='undefined'&&speechSynthesis.speaking))){previewTick=now;desktopPreview()}}requestAnimationFrame(previewLoop);
 $('enter').onclick=start;$('exit').onclick=()=>session?.end();
 try{setup();desktopPreview();if(!window.isSecureContext){$('status').textContent='HTTPS is required for immersive WebXR.'}else if(!navigator.xr){$('status').textContent='WebXR not available here. Regular mode is available; use Meta Quest Browser for optional VR.'}else{navigator.xr.isSessionSupported('immersive-vr').then(ok=>{$('enter').disabled=!ok;$('enter').textContent=ok?'Enter Meta Quest VR':'VR not supported';$('status').textContent=ok?'Ready to request an immersive VR session.':'Immersive VR is not supported in this browser.'}).catch(e=>$('status').textContent=e.message)}}catch(e){$('status').textContent='Preview failed: '+e.message}
 </script></body></html>
