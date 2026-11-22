@@ -1,0 +1,10 @@
+const test = require("node:test");
+const assert = require("node:assert/strict");
+const {validateStandard,validateImport} = require("../curriculum/standards-validator.cjs");
+const sample = {id:"sample-1",jurisdiction:"Example region",authority:"Example authority",subject:"Mathematics",grade:"5",standardCode:"M.5.1",description:"Sample objective",version:"2026",sourceUrl:"https://example.org/standards",license:"permission pending",reviewer:"Pending review",reviewedAt:"2026-11-22",approved:false};
+test("draft record can be staged without being approved",()=>assert.deepEqual(validateStandard(sample),[]));
+test("approved records need licensing and educator signoff",()=>assert.equal(validateStandard({...sample,approved:true}).length,2));
+test("reject missing provenance and unsafe URLs",()=>assert.ok(validateStandard({...sample,sourceUrl:"http://example.org",authority:""}).length>=2));
+test("reject impossible dates",()=>assert.ok(validateStandard({...sample,reviewedAt:"2026-02-30"}).length>0));
+test("reject duplicate identifiers",()=>assert.equal(validateImport([sample,{...sample}]).ok,false));
+test("valid staging batch",()=>assert.equal(validateImport([sample]).ok,true));
