@@ -86,3 +86,11 @@ Each new feature should include: a plain-language purpose, prerequisites, a numb
 3. Return to **English** for hints, practice questions, and typed questions; those features have not been translated.
 4. Use the external educational reference link to explore the subject.
 **Limitations:** Only two sample subjects have French explanations. Translation and curriculum accuracy require educator review before school use.
+
+## Gameplay testing checklist (prototype)
+1. Open `play.html` and follow each mode link: 3D campus, POV workshop, VR classroom, school and hands-on lab. Confirm pages load and controls respond.
+2. Open `learning-quest.html`. Complete correct and incorrect answers in each room. Check feedback, Next challenge, mastery, stars and reset; refresh to check local progress persistence.
+3. Open `curriculum-workshop.html`. Answer sample practice questions, follow the tutor link and return; inspect anonymous progress in `educator-dashboard.html` in the same tab.
+4. Try keyboard, touch and mouse where supported. Test VR only on an actual compatible headset over HTTPS; desktop inspection cannot prove headset behavior.
+5. Run `npm test` from the repository root (Node.js 20+). The gameplay smoke tests verify local files and links, not real device interaction or visual rendering.
+**Testing status:** These steps are a manual test plan; device/browser and VR tests have not yet been confirmed. Report the exact mode, device, steps and error before marking a feature broken or fixed.
