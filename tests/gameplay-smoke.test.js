@@ -106,3 +106,13 @@ test('learning quest does not reveal explanation after a wrong answer',()=>{
  assert.match(html,/textContent=right\?'Correct! ⭐ '\+q\[3\]:'Not quite\. Try another answer\.'/);
  assert.doesNotMatch(html,/\(right\?'Correct! ⭐ ':'Not quite\. Try another answer\. '\)\+q\[3\]/);
 });
+
+test('learning quest offers a printable identifier-free teacher summary',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/id="printProgress"/);
+ assert.match(html,/\$\('printProgress'\)\.onclick=\(\)=>window\.print\(\)/);
+ assert.match(html,/@media print\{/);
+ assert.match(html,/main>section:not\(:nth-of-type\(3\)\)/);
+ assert.match(html,/id="roomProgress"/);
+ assert.match(html,/id="overallProgress"/);
+});
