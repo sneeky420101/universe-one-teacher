@@ -132,3 +132,14 @@ test('all five learning rooms include accessible three-point study guides',()=>{
  assert.match(html,/\$\('studyGuide'\)\.open=false/);
  assert.match(html,/li\.textContent=point/);
 });
+
+test('learning quest recommends and resumes unfinished practice across rooms',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/id="nextSteps"/);
+ assert.match(html,/id="continueLearning"/);
+ assert.match(html,/function nextUnfinished\(\)/);
+ assert.match(html,/completed\[r\.id\+'-'\+j\]!==true/);
+ assert.match(html,/\$\('continueLearning'\)\.onclick=/);
+ assert.match(html,/\$\('challengeTitle'\)\.focus\(\)/);
+ assert.match(html,/All 20 practice challenges completed/);
+});
