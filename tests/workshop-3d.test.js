@@ -5,3 +5,5 @@ test('three modeled workshop environments are selectable',()=>{for(const key of 
 test('workshop supports pointer manipulation and inspection feedback',()=>{assert.match(workshop,/pointerdown/);assert.match(workshop,/pointermove/);assert.match(workshop,/pointerup/);assert.match(workshop,/visited\.add\(selected\)/);assert.match(workshop,/role="status"/)});
 test('medical simulation avoids claims of surgical credentialing',()=>{assert.match(workshop,/not validated surgical simulators/);assert.match(workshop,/anatomy and safety only/)});
 test('trades catalog is served as JSON',()=>assert.match(server,/file==='curriculum\/trades-worlds\.json'/));
+
+test('automotive and excavator manipulation controls are wired',()=>{for(const term of ['hoodOpen','wheelRemoved','boomAngle','bucketAngle','id="action"','addEventListener(\'click\''])assert.ok(workshop.includes(term),term)});
