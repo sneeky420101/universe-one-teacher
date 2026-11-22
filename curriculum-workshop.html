@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Curriculum Workshop Preview — Universe One</title>
-<style>body{font:16px system-ui;background:#101827;color:#f5f7fb;max-width:900px;margin:auto;padding:24px}a{color:#9cdbff}button,select{padding:12px;border-radius:8px;margin:6px;background:#e8f5ff;color:#102033;border:0}button:focus,select:focus{outline:3px solid orange}.panel{background:#203049;padding:20px;border-radius:14px;margin:16px 0}.muted{color:#c5d3e2}.correct{color:#9ef5b1}.incorrect{color:#ffd19d}</style></head>
+<style>body{font:16px system-ui;background:#101827;color:#f5f7fb;max-width:900px;margin:auto;padding:24px}a{color:#9cdbff}button,select{padding:12px;border-radius:8px;margin:6px;background:#e8f5ff;color:#102033;border:0}button:focus,select:focus{outline:3px solid orange}.panel{background:#203049;padding:20px;border-radius:14px;margin:16px 0}.muted{color:#c5d3e2}.correct{color:#9ef5b1}.incorrect{color:#ffd19d} .tour-target{outline:3px solid #ffd36b;outline-offset:5px}#tour{border:2px solid #ffd36b}#tour[hidden]{display:none}</style></head>
 <body><main><h1>Universe One — Curriculum Workshop</h1><p class="muted">Prototype: illustrative objectives only. Not official standards, educator-approved curriculum, or an AI tutor. No student account or server-side progress collection.</p>
-<p><a href="index.html">Return to classroom</a> · <a href="TUTORIALS.md">Beginner tutorials</a></p><details class="panel"><summary><strong>How to use this workshop — 4 easy steps</strong></summary><ol><li>Choose Fractions or Water cycle from the menu.</li><li>Read the learning objective and open the source link.</li><li>Answer the practice question.</li><li>Read the feedback and retry if needed.</li></ol><p>No school grade is submitted. This is a practice preview.</p></details><label for="lesson">Choose a sample workshop</label><select id="lesson"></select>
+<p><a href="index.html">Return to classroom</a> · <a href="TUTORIALS.md">Beginner tutorials</a></p><details class="panel"><summary><strong>How to use this workshop — 4 easy steps</strong></summary><ol><li>Choose Fractions or Water cycle from the menu.</li><li>Read the learning objective and open the source link.</li><li>Answer the practice question.</li><li>Read the feedback and retry if needed.</li></ol><p>No school grade is submitted. This is a practice preview.</p></details><section id="tour" class="panel" aria-label="Guided tutorial" hidden><h2>Guided tour <span id="tour-count"></span></h2><p id="tour-instruction" aria-live="polite"></p><button type="button" id="tour-back">Back</button><button type="button" id="tour-next">Next</button><button type="button" id="tour-exit">Exit tutorial</button></section><p><button type="button" id="tour-start">Start guided tutorial</button></p><label for="lesson">Choose a sample workshop</label><select id="lesson"></select>
 <section class="panel" aria-live="polite"><h2 id="heading"></h2><p id="objective"></p><p id="source"></p></section>
 <section class="panel"><h2>Practice check</h2><p id="question"></p><div id="choices" role="group" aria-label="Answer choices"></div><p id="feedback" role="status"></p></section>
 </main><script>
@@ -24,4 +24,28 @@ function render(){
  });$("choices").append(b)});
 }
 $("lesson").addEventListener("change",render);render();
+const steps=[
+{target:"lesson",message:"Step 1: Choose a workshop from this menu. Start with Fractions."},
+{target:"objective",message:"Step 2: Read the learning objective to understand what you will practice."},
+{target:"source",message:"Step 3: Open the educational source link, read it, then return here."},
+{target:"choices",message:"Step 4: Select an answer. Read the feedback and try again if needed."}
+];
+let current=0;
+function clearHighlight(){document.querySelectorAll(".tour-target").forEach(e=>e.classList.remove("tour-target"))}
+function showStep(){
+ clearHighlight();const step=steps[current];const target=$(step.target);
+ $("tour-count").textContent=(current+1)+" of "+steps.length;
+ $("tour-instruction").textContent=step.message;
+ $("tour-back").disabled=current===0;
+ $("tour-next").textContent=current===steps.length-1?"Finish":"Next";
+ target.classList.add("tour-target");
+ target.scrollIntoView({block:"nearest",behavior:"auto"});
+}
+function closeTour(){clearHighlight();$("tour").hidden=true;$("tour-start").focus()}
+$("tour-start").addEventListener("click",()=>{current=0;$("tour").hidden=false;showStep();$("tour-next").focus()});
+$("tour-next").addEventListener("click",()=>{if(current===steps.length-1)closeTour();else{current++;showStep()}});
+$("tour-back").addEventListener("click",()=>{if(current>0){current--;showStep()}});
+$("tour-exit").addEventListener("click",closeTour);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("tour").hidden)closeTour()});
+
 </script></body></html>
