@@ -20,6 +20,14 @@ jobs:
           node-version: '22'
       - name: Run regression suite and curriculum gate
         run: npm test
+      - name: Verify Android release remains blocked until device evidence exists
+        shell: bash
+        run: |
+          if npm run android:preflight; then
+            echo 'Android release gate unexpectedly passed; requires manual verification.'
+            exit 1
+          fi
+          echo 'Android packaging blockers correctly detected.'
       - name: Security audit
         run: npm run security:audit
       - name: Verify release gate remains blocked without approval
