@@ -73,3 +73,13 @@ test('learning quest supports accessible next-room progression',()=>{
  assert.match(html,/room=\(room\+1\)%rooms\.length/);
  assert.match(html,/\$\('challengeTitle'\)\.focus\(\)/);
 });
+
+test('learning quest keeps mobile responsive overrides after base grid rules',()=>{
+ const html=read('learning-quest.html');
+ const base=html.indexOf('.room{display:grid;grid-template-columns:repeat(');
+ const mobile=html.indexOf('@media(max-width:600px)');
+ const narrow=html.indexOf('@media(max-width:360px)');
+ assert.ok(base>=0&&mobile>base&&narrow>mobile,'responsive overrides must follow base room grid');
+ assert.match(html.slice(mobile),/\.room\{grid-template-columns:1fr 1fr/);
+ assert.match(html.slice(narrow),/\.room\{grid-template-columns:1fr\}/);
+});
