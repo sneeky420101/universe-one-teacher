@@ -11,3 +11,5 @@ test('automotive and excavator manipulation controls are wired',()=>{for(const t
 test('guided mission offers keyboard-accessible object selection and progression',()=>{assert.match(workshop,/id="nextTarget"/);assert.match(workshop,/function selectPart\(part\)/);assert.match(workshop,/Next objective: inspect/);assert.match(workshop,/Mission complete:/)});
 
 test('3D trade missions include scored, single-attempt scenario assessments',()=>{for(const marker of ['id="challenge"','id="score"','const assessments=','function renderChallenge(part)','if(answered)return','correctCount++','practice only; not a professional qualification'])assert.ok(workshop.includes(marker),marker)});
+
+test('practice mission tracks attempted and correct answers without awarding credentials',()=>{for(const marker of ['attempted=new Set()','correctParts=new Set()','attempted.add(part.i)','correctParts.add(part.i)','id="missionResult"','Practice mission passed:','Reset to retry missed concepts.'])assert.ok(workshop.includes(marker),marker)});
