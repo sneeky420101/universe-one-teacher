@@ -53,3 +53,23 @@ test('connection step rejects an extra shortcut wire', () => {
   assert.equal(attempt.result.correct, false);
   assert.equal(attempt.session.step, 1);
 });
+
+test('invalid session boundaries fail predictably instead of accessing a missing step', () => {
+  for (const step of [-1, lab.STEPS.length, lab.STEPS.length + 1, 1.5]) {
+    assert.throws(() => lab.submit({...lab.createSession(), step}, {}), TypeError);
+  }
+  assert.throws(() => lab.submit({...lab.createSession(), attempts: -1}, {}), TypeError);
+  assert.throws(() => lab.submit({...lab.createSession(), completed: 'yes'}, {}), TypeError);
+});
+test('completed sessions return a safe no-op', () => {
+  let s = lab.createSession();
+  for (const action of [
+    {components: ['battery', 'switch', 'lamp']},
+    {edges},
+    {switchClosed: true},
+    {answer: 'closed-loop'}
+  ]) s = lab.submit(s, action).session;
+  const again = lab.submit(s, null);
+  assert.equal(again.session.completed, true);
+  assert.equal(again.result.nextStep, null);
+});
