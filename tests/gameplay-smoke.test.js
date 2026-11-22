@@ -32,3 +32,12 @@ test('inline gameplay scripts parse as JavaScript',()=>{
   for(const script of scripts)assert.doesNotThrow(()=>new vm.Script(script[2],{filename:name}),name+' contains invalid inline JavaScript');
  }
 });
+
+test('workshop restores validated per-tab practice counters',()=>{
+ const html=read('curriculum-workshop.html');
+ assert.match(html,/sessionStorage\.getItem\("universe-one-practice-v1"\)/);
+ assert.match(html,/Number\.isSafeInteger\(attempts\)/);
+ assert.match(html,/Number\.isSafeInteger\(correct\)/);
+ assert.match(html,/correct<=attempts/);
+ assert.match(html,/sessionStorage\.setItem\("universe-one-practice-v1"/);
+});
