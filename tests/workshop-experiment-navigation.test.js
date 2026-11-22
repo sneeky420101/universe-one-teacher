@@ -1,3 +1,13 @@
-const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
-test('experiment values are keyed per workshop and station',()=>{assert.match(html,/experimentValues=\{\}/);assert.match(html,/experimentValues\[key\]\?\?config\.initial/);assert.match(html,/experimentValues\[id\]=v/)});
-test('slider input updates current station state',()=>{assert.match(html,/experimentValues\[\$\('workshop'\)\.value\+': '\+selected\]/.source.replace(': ',':'))});
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const html=fs.readFileSync(path.join(__dirname,'..','life-workshops-3d.html'),'utf8');
+test('experiment values are keyed per workshop and station',()=>{
+ assert.ok(html.includes('experimentValues={}'));
+ assert.ok(html.includes('experimentValues[key]??config.initial'));
+ assert.ok(html.includes('experimentValues[id]=v'));
+});
+test('slider input updates current station state',()=>{
+ assert.ok(html.includes("experimentValues[$('workshop').value+':'+selected]"));
+});
