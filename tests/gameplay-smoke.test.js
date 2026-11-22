@@ -65,3 +65,11 @@ test('learning quest offers a privacy-preserving CSV progress export',()=>{
  assert.match(html,/\['Learning room','Completed','Total'\]/);
  assert.doesNotMatch(html,/\['Student name','Email'/);
 });
+
+test('learning quest supports accessible next-room progression',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/id="nextRoom"/);
+ assert.match(html,/\$\('nextRoom'\)\.onclick=/);
+ assert.match(html,/room=\(room\+1\)%rooms\.length/);
+ assert.match(html,/\$\('challengeTitle'\)\.focus\(\)/);
+});
