@@ -35,3 +35,11 @@ Teacher dashboards, managed classes, gradebook synchronization, student accounts
 
 ## Tutorial requirements for future features
 Each new feature should include: a plain-language purpose, prerequisites, a numbered first-use walkthrough, a practice example, an accessible text alternative, common problems and fixes, privacy notes, and an explicit statement of what is not yet implemented. Update this guide in the same change as the feature. Do not claim an untested capability is working.
+
+## Educator dashboard preview (about 2 minutes)
+1. Open `educator-dashboard.html` in your browser.
+2. Select **Start guided tutorial** to learn the three dashboard sections.
+3. Read the sample overview and sample workshop activity table.
+4. Select **Reset sample data** to restore the fictional examples.
+5. Use **Try a workshop** to practice as a learner.
+**Important:** All dashboard figures are fictional. This is not a gradebook, does not read workshop progress, and cannot identify students. School use requires privacy review, access controls, and verified integrations.
