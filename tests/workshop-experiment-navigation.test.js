@@ -9,5 +9,5 @@ test('experiment values are keyed per workshop and station',()=>{
  assert.ok(html.includes('experimentValues[id]=v'));
 });
 test('slider input updates current station state',()=>{
- assert.ok(html.includes("const key=$('workshop').value+':'+selected;experimentValues[key]=Number("));
+ assert.ok(html.includes("const key=$('workshop').value+':'+selected;const value=Number("));
 });
