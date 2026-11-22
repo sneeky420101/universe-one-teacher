@@ -6,7 +6,7 @@
 <h1>🌌 Universe One — Meta Quest Classroom Lab</h1>
 <p class="notice">Experimental WebXR classroom. Intended for Meta Quest Browser over HTTPS. No student login, microphone, camera, multiplayer, or personal-data collection. Teacher supervision required. Do not use as a production classroom.</p>
 <label for="level">Learning level</label><select id="level"></select>
-<label for="topic">Learning station</label><select id="topic"><option value="space">Solar system</option><option value="math">Mathematics</option><option value="biology">Living systems</option></select>
+<label for="course">Course / practical class</label><select id="course"><option value="school-science">School science — solar system investigation</option><option value="MATH-FOUND-001">College: quantitative reasoning lab (draft)</option><option value="SCI-FOUND-001">College: scientific inquiry lab (draft)</option></select><p id="courseObjective" aria-live="polite"></p><label for="topic">Learning station</label><select id="topic"><option value="space">Solar system</option><option value="math">Mathematics</option><option value="biology">Living systems</option></select>
 <p><button id="enter" disabled>Checking VR support…</button><button id="exit" disabled>Exit VR</button><a href="index.html" style="color:#a9d8ff">Back to classroom</a></p>
 <p id="status" role="status">Checking headset support.</p>
 <canvas id="scene" width="900" height="520" aria-label="Preview of three dimensional classroom"></canvas>
@@ -21,8 +21,15 @@ levels.forEach(v=>{const e=document.createElement('option');e.value=v;e.textCont
 $('level').value='Grade 5';
 const topics=['space','math','biology'];
 const facts={space:'Earth is the third planet from the Sun. Source: NASA Science, science.nasa.gov/earth/facts/',math:'One kilometer equals 1,000 meters. Source: NIST, nist.gov/pml/owm',biology:'Living systems interact with their environment. Educator review recommended.'};
-let gl,program,buffer,session,refSpace,baseLayer,poseReady=false;let interactions=0;let selectedObject=0;
-function updateLesson(){$('lesson').textContent=$('level').value+' • '+facts[$('topic').value]+' This station is a shared sample, not a grade-specific curriculum.';$('activity').textContent='Interact with the central object to practice the '+$('topic').value+' station.'}\nfunction interact(){interactions++;const t=$('topic').value;const feedback=t==='space'?'You examined Earth: third planet from the Sun.':t==='math'?'Measurement challenge: 1 kilometer = 1,000 meters.':'Biology exploration: living things interact with their environments.';$('activity').textContent='Interaction '+interactions+': '+feedback+' Practice only; no official grade.'}\n$('interact').onclick=interact;
+let gl,program,buffer,session,refSpace,baseLayer,poseReady=false;let interactions=0;let selectedObject=0;let stepsCompleted=new Set();
+const courseSteps={
+ 'school-science':[{target:0,task:'Inspect the space object and identify Earth as the third planet.'},{target:2,task:'Inspect the living-systems object and describe how organisms interact with environments.'}],
+ 'MATH-FOUND-001':[{target:1,task:'Use the measurement object to demonstrate the kilometer-to-meter conversion.'},{target:0,task:'Inspect the model and explain how scale affects a representation.'}],
+ 'SCI-FOUND-001':[{target:2,task:'Observe the living-systems object and state a testable question.'},{target:0,task:'Inspect the space object and identify an observable fact.'}]
+};
+function updateCourse(){stepsCompleted=new Set();const course=$('course').value;const steps=courseSteps[course];$('courseObjective').textContent='Practical tasks: '+steps.map((s,i)=>(i+1)+'. '+s.task).join('  ')+' Draft, noncredit practice.';$('activity').textContent='Complete the practical tasks by selecting the matching objects.'}
+$('course').addEventListener('change',updateCourse);
+function updateLesson(){$('lesson').textContent=$('level').value+' • '+facts[$('topic').value]+' This station is a shared sample, not a grade-specific curriculum.';$('activity').textContent='Interact with the central object to practice the '+$('topic').value+' station.'}\nfunction interact(target=selectedObject){interactions++;const t=$('topic').value;const feedback=t==='space'?'You examined Earth: third planet from the Sun.':t==='math'?'Measurement challenge: 1 kilometer = 1,000 meters.':'Biology exploration: living things interact with their environments.';const steps=courseSteps[$('course').value];const step=steps.findIndex(s=>s.target===target);if(step>=0)stepsCompleted.add(step);$('activity').textContent='Interaction '+interactions+': '+feedback+' Practical tasks completed: '+stepsCompleted.size+'/'+steps.length+'. '+(stepsCompleted.size===steps.length?'Practice mission complete! Explain your findings to an instructor.':'Continue exploring the required objects.')+' No official grade.'}\n$('interact').onclick=()=>interact(topics.indexOf($('topic').value)===0?0:topics.indexOf($('topic').value)===1?1:2);updateCourse();
 $('topic').onchange=updateLesson;$('level').onchange=updateLesson;updateLesson();
 const vert='attribute vec3 p;uniform mat4 mvp;uniform float pointSize;void main(){gl_Position=mvp*vec4(p,1.0);gl_PointSize=pointSize;}';
 const frag='precision mediump float;uniform vec4 color;void main(){gl_FragColor=color;}';
@@ -68,7 +75,7 @@ async function start(){try{await gl.makeXRCompatible();session=await navigator.x
  if(best===-1){$('activity').textContent='Aim the controller ray at a classroom object and press trigger.';return}
  selectedObject=best;
  if(best===0){$('topic').value='space'}else if(best===1){$('topic').value='math'}else{$('topic').value='biology'}
- updateLesson();interact();
+ updateLesson();interact(best);
 });baseLayer=new XRWebGLLayer(session,gl);session.updateRenderState({baseLayer});try{refSpace=await session.requestReferenceSpace('local-floor')}catch{refSpace=await session.requestReferenceSpace('local')};$('enter').disabled=true;$('exit').disabled=false;$('status').textContent='VR classroom active. Press controller trigger to interact with the learning object.';session.requestAnimationFrame(frame)}catch(e){$('status').textContent='VR could not start: '+e.message;$('enter').disabled=false;if(session)await session.end().catch(()=>{})}}
 function frame(time,xrFrame){if(!session)return;session.requestAnimationFrame(frame);const pose=xrFrame.getViewerPose(refSpace);if(!pose)return;gl.bindFramebuffer(gl.FRAMEBUFFER,baseLayer.framebuffer);for(const view of pose.views){const viewport=baseLayer.getViewport(view);gl.viewport(viewport.x,viewport.y,viewport.width,viewport.height);gl.enable(gl.SCISSOR_TEST);gl.scissor(viewport.x,viewport.y,viewport.width,viewport.height);renderScene(multiply(view.projectionMatrix,view.transform.inverse.matrix));gl.disable(gl.SCISSOR_TEST)}}
 $('enter').onclick=start;$('exit').onclick=()=>session?.end();
