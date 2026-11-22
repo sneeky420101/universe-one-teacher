@@ -6,7 +6,7 @@
 <h1>🌌 Universe One — Classroom Adventure</h1>
 <p class="notice">Experimental classroom game for ordinary browsers and optional Meta Quest VR over HTTPS. No student login, microphone, camera, multiplayer, or personal-data collection. Sample mission completion is saved locally when browser storage is available. Teacher supervision required. Do not use as a production classroom.</p>
 <label for="level">Learning level</label><select id="level"></select>
-<label for="topic">Learning station</label><select id="topic"><option value="space">Solar system</option><option value="math">Mathematics</option><option value="biology">Living systems</option></select>
+<label for="topic">Learning station</label><select id="topic"><option value="space">Solar system</option><option value="math">Mathematics</option><option value="biology">Living systems</option><option value="geography">Geography</option><option value="physics">Physics lab</option><option value="history">History</option></select>
 <p><button id="enter" disabled>Checking VR support…</button><button id="exit" disabled>Exit VR</button><a href="index.html" style="color:#a9d8ff">Back to classroom</a></p>
 <p id="status" role="status">Checking headset support.</p>
 <canvas id="scene" width="900" height="520" aria-label="Preview of three dimensional classroom"></canvas>
@@ -19,18 +19,18 @@ const $=id=>document.getElementById(id);
 const levels=['Pre-K','Kindergarten',...Array.from({length:12},(_,i)=>'Grade '+(i+1)),'College','Adult / GED'];
 levels.forEach(v=>{const e=document.createElement('option');e.value=v;e.textContent=v;$('level').append(e)});
 $('level').value='Grade 5';
-const topics=['space','math','biology'];
-const questions={space:{q:'Which planet is third from the Sun?',answers:['Earth','Mars'],correct:0},math:{q:'How many meters are in one kilometer?',answers:['100','1000'],correct:1},biology:{q:'Do living systems interact with their environment?',answers:['Yes','No'],correct:0}};
+const topics=['space','math','biology','geography','physics','history'];
+const questions={space:{q:'Which planet is third from the Sun?',answers:['Earth','Mars'],correct:0},math:{q:'How many meters are in one kilometer?',answers:['100','1000'],correct:1},biology:{q:'Do living systems interact with their environment?',answers:['Yes','No'],correct:0},geography:{q:'Which ocean is the largest?',answers:['Atlantic','Pacific'],correct:1},physics:{q:'Which force pulls objects toward Earth?',answers:['Gravity','Magnetism'],correct:0},history:{q:'In which year did Apollo 11 land on the Moon?',answers:['1969','1979'],correct:0}};
 const progressKey='universe-one.sample-missions.v1';
 function loadProgress(){try{const data=JSON.parse(localStorage.getItem(progressKey)||'[]');return new Set(Array.isArray(data)?data.filter(x=>topics.includes(x)):[])}catch{return new Set()}}
 let answerIndex=0,feedback='',completed=loadProgress();
 function saveProgress(){try{localStorage.setItem(progressKey,JSON.stringify([...completed]));return true}catch{return false}}
 
 function nextStation(){$('topic').selectedIndex=($('topic').selectedIndex+1)%topics.length;answerIndex=0;feedback='';updateLesson();speakLesson()}
-function submitAnswer(){const topic=$('topic').value;const item=questions[topic];if(answerIndex===item.correct){completed.add(topic);const saved=saveProgress();feedback=completed.size===3?'Mission complete! 300 XP — Explorer badge earned.':'Correct! '+(completed.size*100)+' XP | Missions '+completed.size+'/3';if(!saved)feedback+=' (session only)';}else{feedback='Try again. Review the lesson.'}updateLesson()}
+function submitAnswer(){const topic=$('topic').value;const item=questions[topic];if(answerIndex===item.correct){completed.add(topic);const saved=saveProgress();feedback=completed.size===topics.length?'Mission complete! '+topics.length*100+' XP — Explorer badge earned.':'Correct! '+(completed.size*100)+' XP | Missions '+completed.size+'/'+topics.length;if(!saved)feedback+=' (session only)';}else{feedback='Try again. Review the lesson.'}updateLesson()}
 function speakLesson(){if(!('speechSynthesis' in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(facts[$('topic').value].split(' Source:')[0]);u.rate=.9;speechSynthesis.speak(u)}catch{}}
 
-const facts={space:'Earth is the third planet from the Sun. Source: NASA Science, science.nasa.gov/earth/facts/',math:'One kilometer equals 1,000 meters. Source: NIST, nist.gov/pml/owm',biology:'Living systems interact with their environment. Educator review recommended.'};
+const facts={space:'Earth is the third planet from the Sun. Source: NASA Science, science.nasa.gov/earth/facts/',math:'One kilometer equals 1,000 meters. Source: NIST, nist.gov/pml/owm',biology:'Living systems interact with their environment. Educator review recommended.',geography:'The Pacific is the largest ocean. Reference: NOAA Ocean Service.',physics:'Gravity attracts masses. Near Earth it causes unsupported objects to fall. Reference: NASA Science.',history:'Apollo 11 landed on the Moon in July 1969. Reference: NASA Apollo 11 mission history.'};
 let gl,program,buffer,session,refSpace,baseLayer,starting=false;
 function updateLesson(){$('lesson').textContent=$('level').value+' • '+facts[$('topic').value]+' This station is a shared sample, not a grade-specific curriculum.';const item=questions[$('topic').value];$('mission').textContent=item.q;$('answers').replaceChildren(...item.answers.map((answer,i)=>{const b=document.createElement('button');b.textContent=answer;b.setAttribute('aria-pressed',String(i===answerIndex));b.onclick=()=>{answerIndex=i;feedback='';updateLesson()};return b}));$('result').textContent=feedback+' XP: '+completed.size*100;if(gl&&!session)desktopPreview()}
 $('topic').onchange=()=>{answerIndex=0;feedback='';updateLesson()};$('level').onchange=updateLesson;updateLesson();
@@ -66,7 +66,7 @@ gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,boardTexture);
 if(key!==boardKey){
 const c=document.createElement('canvas');c.width=1024;c.height=512;const ctx=c.getContext('2d');
 ctx.fillStyle='#edf8ff';ctx.fillRect(0,0,1024,512);ctx.fillStyle='#16334b';ctx.font='bold 48px sans-serif';ctx.fillText('UNIVERSE ONE | '+$('topic').selectedOptions[0].text,40,70);
-ctx.font='32px sans-serif';ctx.fillText($('level').value+' | XP: '+(completed.size*100)+' / 300',40,135);
+ctx.font='32px sans-serif';ctx.fillText($('level').value+' | XP: '+(completed.size*100)+' / '+topics.length*100,40,135);
 let line='',y=210;for(const word of facts[$('topic').value].split(' ')){if(ctx.measureText(line+word).width>940){ctx.fillText(line,40,y);y+=44;line=''}line+=word+' '}ctx.fillText(line,40,y);
 const item=questions[$('topic').value];ctx.font='bold 29px sans-serif';ctx.fillText('Mission: '+item.q,40,350);ctx.font='28px sans-serif';ctx.fillText('Selected: '+item.answers[answerIndex]+' | Choose answer',40,390);ctx.fillText(feedback||'Submit answer to complete mission',40,445);
 gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,c);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);boardKey=key;
@@ -117,7 +117,7 @@ draw(vp,[tx+dx,-1.24,tz+.045],[.1,.07,.18],[.08,.09,.12,1]);
 draw(vp,[tx-.29,-.27,tz],[.075,.24,.08],navy);
 draw(vp,[tx+.29,-.15+gesture,tz+.07],[.075,.22,.08],navy);
 draw(vp,[tx+.29,.09+gesture,tz+.07],[.08,.06,.08],skin);
-for(let i=0;i<3;i++){const earned=completed.has(topics[i]);draw(vp,[2.35+i*.38,1.2,-7.6],[.13,.13,.08],earned?[.97,.75,.18,1]:[.22,.28,.35,1]);}
+for(let i=0;i<topics.length;i++){const earned=completed.has(topics[i]);draw(vp,[2.15+i*.29,1.2,-7.6],[.13,.13,.08],earned?[.97,.75,.18,1]:[.22,.28,.35,1]);}
 drawBoard(vp);}
 function desktopPreview(){if(!gl)return;gl.disable(gl.SCISSOR_TEST);gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,$('scene').width,$('scene').height);const aspect=$('scene').width/$('scene').height;const p=new Float32Array([1.8/aspect,0,0,0,0,1.8,0,0,0,0,-1.02,-1,0,0,-.2,0]);renderScene(multiply(p,translation(-walkX,0,-walkZ)))}
 async function start(){if(starting||session||!gl)return;starting=true;walkX=0;walkZ=0;lastFrame=0;$('enter').disabled=true;try{session=await navigator.xr.requestSession('immersive-vr',{optionalFeatures:['local-floor','bounded-floor']});await gl.makeXRCompatible();session.addEventListener('end',()=>{session=null;refSpace=null;if('speechSynthesis' in window)speechSynthesis.cancel();$('exit').disabled=true;$('enter').disabled=false;$('status').textContent='VR session ended.';desktopPreview()});session.addEventListener('select',e=>{if(e.inputSource.handedness==='left'){nextStation()}else{submitAnswer()}});session.addEventListener('squeeze',()=>{answerIndex=(answerIndex+1)%2;feedback='';updateLesson()});baseLayer=new XRWebGLLayer(session,gl);session.updateRenderState({baseLayer});refSpace=await session.requestReferenceSpace('local');$('enter').disabled=true;$('exit').disabled=false;$('status').textContent='VR classroom active. Left trigger: next station. Grip: select answer. Right trigger: submit.';session.requestAnimationFrame(frame)}catch(e){$('status').textContent='VR could not start: '+e.message;$('enter').disabled=false;if(session)await session.end().catch(()=>{});session=null}finally{starting=false}}
@@ -137,7 +137,7 @@ function frame(time,xrFrame){if(!session)return;session.requestAnimationFrame(fr
 function move(x,z){if(session)return;walkX=Math.max(-1.2,Math.min(1.2,walkX+x));walkZ=Math.max(-5.5,Math.min(.3,walkZ+z));desktopPreview()}
 for(const [id,x,z] of [['forward',0,-.35],['back',0,.35],['left',-.35,0],['right',.35,0]])$(id).onclick=()=>move(x,z);
 $('reset').onclick=()=>{walkX=walkZ=0;if(!session)desktopPreview()};
-$('clearProgress').onclick=()=>{if(session||!window.confirm('Reset all three sample mission achievements on this device?'))return;completed.clear();feedback=saveProgress()?'Progress reset.':'Progress reset for this session; browser storage unavailable.';updateLesson()};$('submit').onclick=submitAnswer;$('next').onclick=nextStation;$('listen').onclick=speakLesson;
+$('clearProgress').onclick=()=>{if(session||!window.confirm('Reset all sample mission achievements on this device?'))return;completed.clear();feedback=saveProgress()?'Progress reset.':'Progress reset for this session; browser storage unavailable.';updateLesson()};$('submit').onclick=submitAnswer;$('next').onclick=nextStation;$('listen').onclick=speakLesson;
 window.addEventListener('keydown',e=>{if(session||e.altKey||e.ctrlKey||e.metaKey||/INPUT|SELECT|TEXTAREA|BUTTON/.test(e.target.tagName))return;const d={w:[0,-.15],ArrowUp:[0,-.15],s:[0,.15],ArrowDown:[0,.15],a:[-.15,0],ArrowLeft:[-.15,0],d:[.15,0],ArrowRight:[.15,0]}[e.key];if(d){e.preventDefault();move(...d)}});
 $('enter').onclick=start;$('exit').onclick=()=>session?.end();
 try{setup();desktopPreview();if(!window.isSecureContext){$('status').textContent='HTTPS is required for immersive WebXR.'}else if(!navigator.xr){$('status').textContent='WebXR not available here. Regular mode is available; use Meta Quest Browser for optional VR.'}else{navigator.xr.isSessionSupported('immersive-vr').then(ok=>{$('enter').disabled=!ok;$('enter').textContent=ok?'Enter Meta Quest VR':'VR not supported';$('status').textContent=ok?'Ready to request an immersive VR session.':'Immersive VR is not supported in this browser.'}).catch(e=>$('status').textContent=e.message)}}catch(e){$('status').textContent='Preview failed: '+e.message}
