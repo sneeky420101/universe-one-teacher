@@ -91,3 +91,12 @@ test('learning quest prioritizes unfinished challenges and preserves review mode
  assert.match(html,/let next=\(index\+1\)%r\.questions\.length/);
  assert.match(html,/index=next;answered=false;render\(\)/);
 });
+
+test('learning quest reports overall completion without student identifiers',()=>{
+ const html=read('learning-quest.html');
+ assert.match(html,/id="overallProgress"/);
+ assert.match(html,/Overall completion: /);
+ assert.match(html,/Math\.round\(done\/total\*100\)/);
+ assert.match(html,/role="status" aria-live="polite"/);
+ assert.doesNotMatch(html,/id="studentName"/);
+});
