@@ -27,7 +27,12 @@ test('server serves simulation API and interactive lab',async()=>{
   assert.match(html,/api\\/simulation/);
   const student=await fetch(origin+'/student-hub.html');
   assert.equal(student.status,200);
-  assert.match(await student.text(),/universe-one-local-learning-v1/);
+  const studentHtml=await student.text();
+  assert.match(studentHtml,/universe-one-local-learning-v1/);
+  assert.match(studentHtml,/questionBank/);
+  assert.match(studentHtml,/Complete the 3D workshop before recording an assessment score/);
+  assert.match(studentHtml,/Open workshop to complete/);
+  assert.match(html,/savePracticeCompletion\(scenario\.domain\)/);
   const home=await fetch(origin+'/');
   assert.match(await home.text(),/assembly-lab.html/);
   const post=await fetch(origin+'/api/simulation',{method:'POST'});
