@@ -19,6 +19,14 @@ test('server serves simulation API and interactive lab',async()=>{
   assert.equal(data.scenario.domain,'plumbing');
   assert.equal(data.scenario.steps.length,6);
   assert.equal(data.scenario.verifiedForRealWorldRepair,false);
+  const sceneResponse=await fetch(origin+'/api/simulation/scene?topic='+encodeURIComponent('Rebuild a car engine'));
+  assert.equal(sceneResponse.status,200);
+  const scenePayload=await sceneResponse.json();
+  assert.equal(scenePayload.ok,true);
+  assert.equal(scenePayload.scene.objects.length,2);
+  assert.equal(scenePayload.scene.verifiedDimensions,false);
+  const invalidScene=await fetch(origin+'/api/simulation/scene?topic=unrelated');
+  assert.equal(invalidScene.status,422);
   const catalogResponse=await fetch(origin+'/api/simulation/catalog');
   assert.equal(catalogResponse.status,200);
   const catalog=await catalogResponse.json();
