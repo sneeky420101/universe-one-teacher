@@ -37,3 +37,11 @@ test('scene rejects malformed geometry inputs and missing part state',()=>{
  const scene=buildAssemblyScene(buildScenario('Rebuild a car engine').scenario);
  assert.throws(()=>sceneAtSnapshot(scene,{parts:[]}),/Missing part state/);
 });
+
+test('repeated scene updates restore original home positions',()=>{
+ const scene=buildAssemblyScene(buildScenario('Rebuild a car engine').scenario);
+ const removed=sceneAtSnapshot(scene,{parts:[{id:'fastener',installed:false},{id:'cover',installed:true}]});
+ const restored=sceneAtSnapshot(removed,{parts:[{id:'fastener',installed:true},{id:'cover',installed:true}]});
+ const original=scene.objects.find(o=>o.id==='fastener');
+ assert.deepEqual(restored.objects.find(o=>o.id==='fastener').position,original.position);
+});
