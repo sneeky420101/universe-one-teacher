@@ -1,6 +1,6 @@
 // VOLTFRAME Studios — offline shell only; no student records or quiz answers cached.
-const CACHE='voltframe-teacher-preview-v4';
-const SHELL=['./','./index.html','./quest.html','./tutorial.html','./privacy.html','./global.html','./pathways.html','./campus.html','./manifest.webmanifest','./icon.svg'];
+const CACHE='voltframe-teacher-preview-v5';
+const SHELL=['./','./index.html','./assembly-lab.html','./student-hub.html','./quest.html','./tutorial.html','./privacy.html','./global.html','./pathways.html','./campus.html','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
 });
@@ -11,6 +11,7 @@ self.addEventListener('fetch',event=>{
   const request=event.request;
   const url=new URL(request.url);
   if(request.method!=='GET'||url.origin!==self.location.origin||!url.pathname.startsWith(new URL(self.registration.scope).pathname))return;
+  if(url.pathname.startsWith(new URL('./api/',self.registration.scope).pathname))return;
   if(request.mode==='navigate'){
     event.respondWith(fetch(request).then(response=>response.ok?response:Promise.reject(Error('offline'))).catch(()=>caches.match(request).then(cached=>cached||caches.match('./index.html'))));
     return;
