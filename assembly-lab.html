@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Universe One — Interactive Assembly Lab</title><style>
-body{margin:0;background:#101827;color:#f1f5ff;font:16px system-ui}main{max-width:1100px;margin:auto;padding:18px}a{color:#a7dcff}button,input{font:inherit;padding:10px;border-radius:8px}button{background:#79e2c2;color:#102327;border:0;margin:4px;cursor:pointer}button:disabled{opacity:.45}input{background:#1a2c46;color:white;border:1px solid #8fa9c5;max-width:95%;width:480px}canvas{width:100%;height:360px;background:#152b42;border-radius:14px;touch-action:none}section{background:#1c2c43;padding:15px;margin:14px 0;border-radius:12px}#steps button{display:block;text-align:left;width:100%;background:#314766;color:white}#steps button.done{background:#285f51}#status{min-height:40px}label{display:block;margin:8px 0}</style></head><body><main><nav><a href="index.html">← School home</a></nav><h1>Interactive Assembly Lab</h1><p>Early 3D educational prototype: select a workshop request, inspect the assembly, remove and reinstall individual components. This is not an AI-generated or physically accurate repair procedure.</p><section><form id="request"><label for="topic">What would you like to learn?</label><input id="topic" maxlength="160" value="Rebuild a car engine" required><button>Build lesson</button></form><p id="lesson"></p></section><canvas id="scene" width="960" height="480" tabindex="0" aria-label="Interactive 3D workbench showing a cover and fastener. Drag to rotate view."></canvas><p>Drag the scene to rotate. The fastener and cover move when you complete their steps. Use the step buttons for accessible controls.</p><section><h2>Hands-on procedure</h2><div id="steps"></div><p id="status" role="status" aria-live="polite"></p><button id="reset">Restart lesson</button></section><p><small>Conceptual teaching only. No verified equipment-specific torque, safety or service instructions. © 2026 Brandon Hastings · VOLTFRAME Studios.</small></p></main><script>
+body{margin:0;background:#101827;color:#f1f5ff;font:16px system-ui}main{max-width:1100px;margin:auto;padding:18px}a{color:#a7dcff}button,input,select{font:inherit;padding:10px;border-radius:8px}button{background:#79e2c2;color:#102327;border:0;margin:4px;cursor:pointer}button:disabled{opacity:.45}input,select{background:#1a2c46;color:white;border:1px solid #8fa9c5;max-width:95%;width:480px}canvas{width:100%;height:360px;background:#152b42;border-radius:14px;touch-action:none}section{background:#1c2c43;padding:15px;margin:14px 0;border-radius:12px}#steps button{display:block;text-align:left;width:100%;background:#314766;color:white}#steps button.done{background:#285f51}#status{min-height:40px}label{display:block;margin:8px 0}</style></head><body><main><nav><a href="index.html">← School home</a></nav><h1>Interactive Assembly Lab</h1><p>Early 3D educational prototype: select a workshop request, inspect the assembly, remove and reinstall individual components. This is not an AI-generated or physically accurate repair procedure.</p><section><form id="request"><label for="topic">What would you like to learn?</label><input id="topic" maxlength="160" value="Rebuild a car engine" required><button>Build lesson</button></form><p id="lesson"></p></section><canvas id="scene" width="960" height="480" tabindex="0" aria-label="Interactive 3D workbench showing a cover and fastener. Drag to rotate view."></canvas><p>Drag the scene to rotate. The fastener and cover move when you complete their steps. Use the step buttons for accessible controls.</p><section><h2>Hands-on procedure</h2><label for="tool">Selected tool</label><select id="tool"><option value="">Hands / no tool</option><option value="socket">Socket</option><option value="wrench">Wrench</option><option value="screwdriver">Screwdriver</option></select><div id="steps"></div><p id="status" role="status" aria-live="polite"></p><button id="reset">Restart lesson</button></section><p><small>Conceptual teaching only. No verified equipment-specific torque, safety or service instructions. © 2026 Brandon Hastings · VOLTFRAME Studios.</small></p></main><script>
 'use strict';
 const $=id=>document.getElementById(id);
 const domains=[
@@ -15,7 +15,7 @@ const steps=[
  ['Install cover','install','cover',null],
  ['Reinstall fastener','install','fastener','tool']];
 let domain=domains[0],completed=0,angle=.35,dragging=false,lastX=0,gl,program,buffer;
-let lessonSteps=steps,scenario=null,loading=false;
+let lessonSteps=steps,scenario=null,loading=false,installed={fastener:true,cover:true},finished=new Set();
 async function start(){
  if(loading)return;
  loading=true;
@@ -27,12 +27,26 @@ async function start(){
   scenario=result.scenario;
   domain={id:scenario.domain,title:scenario.title,tool:scenario.steps.find(s=>s.tool)?.tool||'hand'};
   lessonSteps=scenario.steps.map(s=>[s.action==='inspect'?'Inspect '+s.part:s.action==='remove'?'Remove '+s.part:'Install '+s.part,s.action,s.part,s.tool||null]);
-  completed=0;
+  completed=0;finished=new Set();installed={fastener:true,cover:true};$('tool').value='';
   $('lesson').textContent=scenario.title+' — '+scenario.steps.length+' steps. '+scenario.notice;
   $('status').textContent='Start with '+lessonSteps[0][0].toLowerCase()+'.';
   drawSteps();render();
  }catch(e){$('status').textContent='Simulation service unavailable. Please try again.'}
  finally{loading=false}
+}
+function performStep(index){
+ if(!scenario||index!==completed)return;
+ const step=scenario.steps[index];
+ if((step.requires||[]).some(id=>!finished.has(id))){$('status').textContent='Complete the required earlier steps first.';return}
+ if(step.tool&&$('tool').value!==step.tool){$('status').textContent='Select the '+step.tool+' before this operation. Try again.';return}
+ if(step.action==='remove'&&!installed[step.part]){$('status').textContent='That part is already removed.';return}
+ if(step.action==='install'&&installed[step.part]){$('status').textContent='That part is already installed.';return}
+ if(step.action==='remove')installed[step.part]=false;
+ if(step.action==='install')installed[step.part]=true;
+ finished.add(step.id);
+ completed++;
+ $('status').textContent=completed===lessonSteps.length?'Assembly complete! All parts reinstalled. This is conceptual practice only.':lessonSteps[index][0]+' completed. '+(lessonSteps[completed][3]?'Select '+lessonSteps[completed][3]+' for the next operation.':'Continue to the next step.');
+ drawSteps();render();
 }
 function drawSteps(){
  const host=$('steps');host.replaceChildren();
@@ -40,14 +54,9 @@ function drawSteps(){
   const b=document.createElement('button');b.type='button';
   b.className=i<completed?'done':'';
   b.disabled=i!==completed;
-  b.textContent=(i+1)+'. '+s[0]+(s[3]?' (use '+s[3]+')':'')+(i<completed?' ✓':'');
-  b.onclick=()=>{
-   if(i!==completed)return;
-   completed++;
-   $('status').textContent=completed===lessonSteps.length?'Assembly completed! This is conceptual practice, not a verified real-world repair.':s[0]+' completed. Continue to the next step.';
-   drawSteps();render();
-  };
-  host.append(b)
+  b.textContent=(i+1)+'. '+s[0]+(s[3]?' (requires '+s[3]+')':'')+(i<completed?' ✓':'');
+  b.onclick=()=>performStep(i);
+  host.append(b);
  })
 }
 $('request').onsubmit=e=>{e.preventDefault();start()};$('reset').onclick=start;
@@ -59,7 +68,7 @@ const faces=[[-1,-1,1,1,-1,1,1,1,1,-1,-1,1,1,1,1,-1,1,1],[-1,-1,-1,-1,1,-1,1,1,-
 function cube(x,y,z,sx,sy,sz,color){const verts=new Float32Array(faces.flat());for(let i=0;i<verts.length;i+=3){verts[i]=verts[i]*sx+x;verts[i+1]=verts[i+1]*sy+y;verts[i+2]=verts[i+2]*sz+z}gl.bufferData(gl.ARRAY_BUFFER,verts,gl.DYNAMIC_DRAW);gl.uniform4fv(gl.getUniformLocation(program,'tint'),color);gl.drawArrays(gl.TRIANGLES,0,verts.length/3)}
 function render(){if(!gl)return;gl.viewport(0,0,gl.canvas.width,gl.canvas.height);gl.clearColor(.05,.1,.17,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);const c=Math.cos(angle),s=Math.sin(angle),aspect=gl.canvas.width/gl.canvas.height;const m=new Float32Array([c/aspect,0,-s*.5,0,s*.18,1,-c*.18,0,s*.42,0,c*.42,0,0,-.08,0,1]);gl.uniformMatrix4fv(gl.getUniformLocation(program,'matrix'),false,m);
 cube(0,-.53,0,1.2,.12,.75,[.2,.33,.42,1]);cube(0,-.2,0,.65,.25,.43,[.31,.46,.63,1]);
-const coverRemoved=completed>=3&&completed<5,fastenerRemoved=completed>=2&&completed<6;
+const coverRemoved=!installed.cover,fastenerRemoved=!installed.fastener;
 cube(coverRemoved?.88:0,.13,0,.55,.09,.35,[.85,.62,.24,1]);
 cube(fastenerRemoved?-.9:0,fastenerRemoved?.15:.3,0,.10,.13,.10,[.83,.86,.91,1]);
 }
