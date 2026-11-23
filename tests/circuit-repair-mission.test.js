@@ -43,3 +43,9 @@ test('repaired circuit unlocks explanation and correct answer persists completio
   app.click('reset');assert.equal(app.nodes.get('progress').value,0);
   assert.match(app.storage.get('universe-one-circuit-mission-v1'),/"explained":false/);
 });
+
+test('3D campus provides an interactive entrance and accessible direct link',()=>{
+  const campus=fs.readFileSync(path.join(__dirname,'..','3d-campus.html'),'utf8');
+  assert.match(campus,/name:'Circuit Repair Workshop',url:'\.\/circuit-repair-mission\.html'/);
+  assert.match(campus,/<a href="\.\/circuit-repair-mission\.html">🔋 Circuit Repair Mission<\/a>/);
+});
