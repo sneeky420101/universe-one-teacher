@@ -36,6 +36,21 @@ async function start(){
  }catch(e){$('status').textContent='Simulation service unavailable. Please try again.'}
  finally{loading=false}
 }
+function savePracticeCompletion(id){
+ const key='universe-one-local-learning-v1';
+ try{
+  const raw=JSON.parse(localStorage.getItem(key)||'{}');
+  const record=raw&&typeof raw==='object'&&!Array.isArray(raw)?raw:{};
+  const valid=['automotive','plumbing','electronics','woodworking'];
+  if(!valid.includes(id))return;
+  const completed=Array.isArray(record.completed)?record.completed.filter(value=>valid.includes(value)):[];
+  record.completed=[...new Set([...completed,id])];
+  localStorage.setItem(key,JSON.stringify(record));
+  $('status').textContent='Practice completed and recorded on this device. Open Student Learning Hub to review your progress.';
+ }catch{
+  $('status').textContent='Practice completed, but local progress could not be saved. Browser storage may be unavailable.';
+ }
+}
 function performStep(index){
  if(!scenario||index!==completed)return;
  const step=scenario.steps[index];
@@ -47,6 +62,7 @@ function performStep(index){
  if(step.action==='install')installed[step.part]=true;
  finished.add(step.id);
  completed++;
+ if(completed===lessonSteps.length)savePracticeCompletion(scenario.domain);
  $('status').textContent=completed===lessonSteps.length?'Assembly complete! All parts reinstalled. This is conceptual practice only.':lessonSteps[index][0]+' completed. '+(lessonSteps[completed][3]?'Select '+lessonSteps[completed][3]+' for the next operation.':'Continue to the next step.');
  drawSteps();render();
 }
