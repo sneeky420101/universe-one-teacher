@@ -9,7 +9,7 @@ const play = fs.readFileSync(path.join(__dirname,'..','play.html'),'utf8');
 function boot(options={}){
   const handlers=new Map(),storage=new Map(),nodes=new Map();
   const ids=['battery','switch','bulb','batteryVisual','switchVisual','bulbVisual','attempts','completed','progress','summary','feedback','explanation','test','reset','voice','voiceStatus'];
-  for(const id of ids) nodes.set(id,{value:id==='battery'?'flat':id==='switch'?'open':id==='bulb'?'broken':0,textContent:'',classList:{toggle(){}},addEventListener(event,fn){handlers.set(id+':'+event,fn)}});
+  for(const id of ids) nodes.set(id,{value:id==='battery'?'flat':id==='switch'?'open':id==='bulb'?'broken':0,textContent:'',classList:{toggle(){}},attributes:{},setAttribute(name,value){this.attributes[name]=value},addEventListener(event,fn){handlers.set(id+':'+event,fn)}});
   const answers=[0,1,2].map(i=>({dataset:{answer:String(i)},disabled:false,addEventListener(event,fn){handlers.set('answer'+i+':'+event,fn)}}));
   const document={getElementById:id=>nodes.get(id),querySelectorAll:selector=>selector==='[data-answer]'?answers:selector==='select'?[nodes.get('battery'),nodes.get('switch'),nodes.get('bulb')]:[]};
   const localStorage={getItem:key=>storage.get(key)||null,setItem:(key,value)=>storage.set(key,value)};
