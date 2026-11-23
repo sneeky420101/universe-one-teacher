@@ -56,3 +56,12 @@ test('theme-only queries resolve to their correct domain',()=>{
   assert.match(result.scenario.notice,/Conceptual six-step/);
  }
 });
+
+
+test('ambiguous cross-domain requests require clarification rather than silently choosing a workshop',()=>{
+ const result=buildScenario('Inspect car and plumbing equipment');
+ assert.equal(result.ok,false);
+ assert.equal(result.reason,'ambiguous-topic');
+ assert.deepEqual(result.domains,['automotive','plumbing']);
+ assert.match(result.hint,/Specify one workshop domain/);
+});
