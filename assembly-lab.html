@@ -29,7 +29,7 @@ async function start(){
   if(!response.ok||!result.ok){$('status').textContent=result.hint||'No supported simulation for that request.';return}
   scenario=result.scenario;
   sceneData=null;
-  try{const sr=await fetch('/api/simulation/scene?topic='+encodeURIComponent($('topic').value),{cache:'no-store'});if(sr.ok){const payload=await sr.json();if(payload.ok&&Array.isArray(payload.scene?.objects))sceneData=payload.scene}}catch{/* Legacy renderer fallback remains available. */}
+  try{const sr=await fetch('/api/simulation/scene?topic='+encodeURIComponent($('topic').value),{cache:'no-store'});if(sr.ok){const payload=await sr.json();if(payload.ok&&Array.isArray(payload.scene?.objects)&&payload.scene.scenarioId===scenario.id)sceneData=payload.scene}}catch{/* Legacy renderer fallback remains available. */}
   domain={id:scenario.domain,title:scenario.title,tool:scenario.steps.find(s=>s.tool)?.tool||'hand'};
   lessonSteps=scenario.steps.map(s=>[s.action==='inspect'?'Inspect '+s.part:s.action==='remove'?'Remove '+s.part:'Install '+s.part,s.action,s.part,s.tool||null]);
   completed=0;finished=new Set();installed={fastener:true,cover:true};$('tool').value='';
