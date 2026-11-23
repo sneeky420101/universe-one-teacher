@@ -25,6 +25,9 @@ test('server serves simulation API and interactive lab',async()=>{
   assert.equal(lab.status,200);
   const html=await lab.text();
   assert.match(html,/api\\/simulation/);
+  const student=await fetch(origin+'/student-hub.html');
+  assert.equal(student.status,200);
+  assert.match(await student.text(),/universe-one-local-learning-v1/);
   const home=await fetch(origin+'/');
   assert.match(await home.text(),/assembly-lab.html/);
   const post=await fetch(origin+'/api/simulation',{method:'POST'});
