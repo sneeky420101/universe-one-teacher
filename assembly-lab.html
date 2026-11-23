@@ -62,8 +62,8 @@ function performStep(index){
  if(step.action==='install')installed[step.part]=true;
  finished.add(step.id);
  completed++;
- if(completed===lessonSteps.length)savePracticeCompletion(scenario.domain);
- $('status').textContent=completed===lessonSteps.length?'Assembly complete! All parts reinstalled. This is conceptual practice only.':lessonSteps[index][0]+' completed. '+(lessonSteps[completed][3]?'Select '+lessonSteps[completed][3]+' for the next operation.':'Continue to the next step.');
+ if(completed===lessonSteps.length){savePracticeCompletion(scenario.domain)}
+ else $('status').textContent=lessonSteps[index][0]+' completed. '+(lessonSteps[completed][3]?'Select '+lessonSteps[completed][3]+' for the next operation.':'Continue to the next step.');
  drawSteps();render();
 }
 function drawSteps(){
