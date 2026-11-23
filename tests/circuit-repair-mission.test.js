@@ -8,7 +8,7 @@ const html = fs.readFileSync(path.join(__dirname,'..','circuit-repair-mission.ht
 const play = fs.readFileSync(path.join(__dirname,'..','play.html'),'utf8');
 function boot(){
   const handlers=new Map(),storage=new Map(),nodes=new Map();
-  const ids=['battery','switch','bulb','batteryVisual','switchVisual','bulbVisual','attempts','completed','progress','summary','feedback','explanation','test','reset'];
+  const ids=['battery','switch','bulb','batteryVisual','switchVisual','bulbVisual','attempts','completed','progress','summary','feedback','explanation','test','reset','voice','voiceStatus'];
   for(const id of ids) nodes.set(id,{value:id==='battery'?'flat':id==='switch'?'open':id==='bulb'?'broken':0,textContent:'',classList:{toggle(){}},addEventListener(event,fn){handlers.set(id+':'+event,fn)}});
   const answers=[0,1,2].map(i=>({dataset:{answer:String(i)},disabled:false,addEventListener(event,fn){handlers.set('answer'+i+':'+event,fn)}}));
   const document={getElementById:id=>nodes.get(id),querySelectorAll:selector=>selector==='[data-answer]'?answers:selector==='select'?[nodes.get('battery'),nodes.get('switch'),nodes.get('bulb')]:[]};
@@ -48,4 +48,14 @@ test('3D campus provides an interactive entrance and accessible direct link',()=
   const campus=fs.readFileSync(path.join(__dirname,'..','3d-campus.html'),'utf8');
   assert.match(campus,/name:'Circuit Repair Workshop',url:'\.\/circuit-repair-mission\.html'/);
   assert.match(campus,/<a href="\.\/circuit-repair-mission\.html">🔋 Circuit Repair Mission<\/a>/);
+});
+
+test('voice guidance is opt-in and does not require microphone access',()=>{
+  assert.match(html,/id="voice" type="button" aria-pressed="false"/);
+  assert.match(html,/speechSynthesis/);
+  assert.doesNotMatch(html,/getUserMedia|SpeechRecognition|webkitSpeechRecognition/);
+  const app=boot();
+  assert.equal(app.nodes.get('voice').disabled,true);
+  app.click('test');
+  assert.equal(app.nodes.get('progress').value,0);
 });
