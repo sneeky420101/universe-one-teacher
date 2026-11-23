@@ -8,7 +8,7 @@ const html = fs.readFileSync(path.join(__dirname,'..','circuit-repair-mission.ht
 const play = fs.readFileSync(path.join(__dirname,'..','play.html'),'utf8');
 function boot(options={}){
   const handlers=new Map(),storage=new Map(),nodes=new Map();
-  const ids=['battery','switch','bulb','batteryVisual','switchVisual','bulbVisual','attempts','completed','progress','summary','feedback','explanation','test','reset','voice','voiceStatus'];
+  const ids=['battery','switch','bulb','batteryVisual','switchVisual','bulbVisual','attempts','completed','progress','summary','feedback','explanation','test','reset','hint','voice','voiceStatus'];
   for(const id of ids) nodes.set(id,{value:id==='battery'?'flat':id==='switch'?'open':id==='bulb'?'broken':0,textContent:'',classList:{toggle(){}},attributes:{},setAttribute(name,value){this.attributes[name]=value},addEventListener(event,fn){handlers.set(id+':'+event,fn)}});
   const answers=[0,1,2].map(i=>({dataset:{answer:String(i)},disabled:false,addEventListener(event,fn){handlers.set('answer'+i+':'+event,fn)}}));
   const document={getElementById:id=>nodes.get(id),querySelectorAll:selector=>selector==='[data-answer]'?answers:selector==='select'?[nodes.get('battery'),nodes.get('switch'),nodes.get('bulb')]:[]};
@@ -78,4 +78,17 @@ test('voice narration starts only after student opts in and can be disabled',()=
   const before=app.spoken.length;
   app.click('test');
   assert.equal(app.spoken.length,before);
+});
+
+test('contextual hints guide repair without awarding unearned progress',()=>{
+  const app=boot();
+  app.click('hint');assert.match(app.nodes.get('feedback').textContent,/discharged battery/);
+  assert.equal(app.nodes.get('progress').value,0);
+  app.nodes.get('battery').value='good';app.change('battery');app.click('hint');
+  assert.match(app.nodes.get('feedback').textContent,/open switch/);
+  app.nodes.get('switch').value='closed';app.change('switch');app.click('hint');
+  assert.match(app.nodes.get('feedback').textContent,/broken filament/);
+  app.nodes.get('bulb').value='good';app.change('bulb');app.click('hint');
+  assert.match(app.nodes.get('feedback').textContent,/Press Test circuit/);
+  assert.equal(app.nodes.get('progress').value,0);
 });
