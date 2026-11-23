@@ -46,3 +46,13 @@ test('selected themes and modes are labeled as unverified conceptual lessons',()
   assert.equal(result.scenario.fidelity,'procedural-prototype');
  }
 });
+
+test('theme-only queries resolve to their correct domain',()=>{
+ for(const [request,domain] of [['Inspect the radiator shroud','automotive'],['Inspect the sink trap','plumbing'],['Inspect the sensor housing','electronics'],['Inspect the drawer slide','woodworking']]){
+  const result=buildScenario(request);
+  assert.equal(result.ok,true,request);
+  assert.equal(result.scenario.domain,domain,request);
+  assert.equal(result.scenario.simulationStages.length,5);
+  assert.match(result.scenario.notice,/Conceptual six-step/);
+ }
+});
