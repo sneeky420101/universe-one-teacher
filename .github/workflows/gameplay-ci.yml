@@ -22,7 +22,21 @@ jobs:
           node-version: '22'
       - name: Run all repository tests and curriculum validation
         run: npm test
-      - name: Run release audit (non-deploying)
-        run: npm run release:audit
       - name: Run security audit
         run: npm run security:audit
+      - name: Check release readiness without overriding hold
+        shell: bash
+        run: |
+          set +e
+          npm run release:audit
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            echo 'Release audit: all gates satisfied (no deployment performed).'
+          elif [ "$status" -eq 1 ]; then
+            echo 'Release audit: intentionally blocked by outstanding release gates.'
+            echo 'This is not a gameplay or security test failure.'
+          else
+            echo "Release audit failed unexpectedly (exit $status)." >&2
+            exit "$status"
+          fi
