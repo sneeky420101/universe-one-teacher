@@ -14,7 +14,7 @@ function evaluate(record){
  if(record.educatorReview?.approved!==true||typeof record.educatorReview?.reviewerId!=='string'||!record.educatorReview.reviewerId.trim()||!validDate(record.educatorReview?.reviewedAt))reasons.push('educator-review-required');
  if(record.sourceVerified!==true)reasons.push('source-not-independently-verified');
  if(record.evidenceAssessment==='supported'&&(!Array.isArray(record.supportingSources)||record.supportingSources.length<1))reasons.push('corroborating-source-required');
- if(Array.isArray(record.supportingSources)&&record.supportingSources.some(s=>typeof s!=='string'||!/^https:\/\/[^\s/]+\\.[^\s/]+/.test(s)))reasons.push('invalid-corroborating-source');
+ if(Array.isArray(record.supportingSources)&&record.supportingSources.some(s=>typeof s!=='string'||!/^https:\/\/[^\s/]+\.[^\s/]+/.test(s)))reasons.push('invalid-corroborating-source');
  if(record.publicationStatus!=='approved')reasons.push('publication-not-approved');
  if(record.knowledgeType!=='empirical-fact'&&record.knowledgeType!=='scientific-theory')reasons.push('not-factual-knowledge');
  return {approved:reasons.length===0,reasons};
