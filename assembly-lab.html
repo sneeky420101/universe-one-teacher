@@ -15,8 +15,41 @@ const steps=[
  ['Install cover','install','cover',null],
  ['Reinstall fastener','install','fastener','tool']];
 let domain=domains[0],completed=0,angle=.35,dragging=false,lastX=0,gl,program,buffer;
-function start(){const query=$('topic').value.toLowerCase();const found=domains.map(d=>({...d,score:d.words.filter(w=>new RegExp('\\b'+w+'\\b').test(query)).length})).sort((a,b)=>b.score-a.score)[0];if(!found||!found.score){$('status').textContent='This topic is not supported yet. Try car engine, plumbing pipe, electronics circuit or wooden cabinet.';return}domain=found;completed=0;$('lesson').textContent=domain.title+' — six-step guided practice. Tool: '+domain.tool+'.';$('status').textContent='Begin by inspecting the fastener.';drawSteps();render()}
-function drawSteps(){const host=$('steps');host.replaceChildren();steps.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.className=i<completed?'done':'';b.disabled=i!==completed;b.textContent=(i+1)+'. '+s[0]+(s[3]?' (use '+domain.tool+')':'')+(i<completed?' ✓':'');b.onclick=()=>{if(i!==completed)return;completed++;$('status').textContent=completed===steps.length?'Assembly completed! You inspected, disassembled and reassembled the model.':s[0]+' completed. Continue to the next step.';drawSteps();render()};host.append(b)})}
+let lessonSteps=steps,scenario=null,loading=false;
+async function start(){
+ if(loading)return;
+ loading=true;
+ $('status').textContent='Preparing your educational simulation…';
+ try{
+  const response=await fetch('/api/simulation?topic='+encodeURIComponent($('topic').value),{cache:'no-store'});
+  const result=await response.json();
+  if(!response.ok||!result.ok){$('status').textContent=result.hint||'No supported simulation for that request.';return}
+  scenario=result.scenario;
+  domain={id:scenario.domain,title:scenario.title,tool:scenario.steps.find(s=>s.tool)?.tool||'hand'};
+  lessonSteps=scenario.steps.map(s=>[s.action==='inspect'?'Inspect '+s.part:s.action==='remove'?'Remove '+s.part:'Install '+s.part,s.action,s.part,s.tool||null]);
+  completed=0;
+  $('lesson').textContent=scenario.title+' — '+scenario.steps.length+' steps. '+scenario.notice;
+  $('status').textContent='Start with '+lessonSteps[0][0].toLowerCase()+'.';
+  drawSteps();render();
+ }catch(e){$('status').textContent='Simulation service unavailable. Please try again.'}
+ finally{loading=false}
+}
+function drawSteps(){
+ const host=$('steps');host.replaceChildren();
+ lessonSteps.forEach((s,i)=>{
+  const b=document.createElement('button');b.type='button';
+  b.className=i<completed?'done':'';
+  b.disabled=i!==completed;
+  b.textContent=(i+1)+'. '+s[0]+(s[3]?' (use '+s[3]+')':'')+(i<completed?' ✓':'');
+  b.onclick=()=>{
+   if(i!==completed)return;
+   completed++;
+   $('status').textContent=completed===lessonSteps.length?'Assembly completed! This is conceptual practice, not a verified real-world repair.':s[0]+' completed. Continue to the next step.';
+   drawSteps();render();
+  };
+  host.append(b)
+ })
+}
 $('request').onsubmit=e=>{e.preventDefault();start()};$('reset').onclick=start;
 const vertex='attribute vec3 position;uniform mat4 matrix;void main(){gl_Position=matrix*vec4(position,1.0);}';
 const fragment='precision mediump float;uniform vec4 tint;void main(){gl_FragColor=tint;}';
