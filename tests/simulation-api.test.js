@@ -25,6 +25,9 @@ test('server serves simulation API and interactive lab',async()=>{
   assert.match(labMarkup,/\/api\/simulation\/scene\?topic=/);
   assert.match(labMarkup,/devicePixelRatio/);
   assert.match(labMarkup,/sceneData\.objects/);
+  assert.match(labMarkup,/webglcontextlost/);
+  assert.match(labMarkup,/webglcontextrestored/);
+  assert.match(labMarkup,/graphics-quality/);
   const sceneResponse=await fetch(origin+'/api/simulation/scene?topic='+encodeURIComponent('Rebuild a car engine'));
   assert.equal(sceneResponse.status,200);
   const scenePayload=await sceneResponse.json();
