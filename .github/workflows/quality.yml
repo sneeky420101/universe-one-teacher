@@ -1,0 +1,27 @@
+name: Universe One quality checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Unit and curriculum checks
+        run: npm test
+      - name: Security audit
+        run: npm run security:audit
+      - name: Release gate (must remain blocked until approved)
+        run: |
+          if npm run release:audit; then
+            echo "Release audit returned ready; verify approval evidence separately."
+          else
+            echo "Release remains blocked, as expected before approval."
+          fi
