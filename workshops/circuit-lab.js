@@ -24,8 +24,11 @@
     normalizeEdge('lamp-out', 'battery-')
   ];
   function circuitComplete(edges) {
+    if (!Array.isArray(edges) || edges.length !== EXPECTED.length) return false;
+    if (!edges.every(e => Array.isArray(e) && e.length === 2 &&
+      e.every(x => typeof x === 'string' && REQUIRED.includes(x)) && e[0] !== e[1])) return false;
     const actual = new Set(edges.map(e => normalizeEdge(e[0], e[1])));
-    return EXPECTED.every(e => actual.has(e));
+    return actual.size === EXPECTED.length && EXPECTED.every(e => actual.has(e));
   }
   function feedback(session, correct, explanation) {
     const n = correct ? 0 : session.attempts + 1;
@@ -40,7 +43,7 @@
     };
   }
   function submit(session, action) {
-    if (!session || !Number.isInteger(session.step) || !Array.isArray(session.history)) throw new TypeError('Invalid session');
+    if (!session || !Number.isInteger(session.step) || session.step < 0 || session.step > STEPS.length || !Array.isArray(session.history) || !Number.isInteger(session.attempts) || session.attempts < 0 || typeof session.completed !== 'boolean' || (session.step === STEPS.length && !session.completed)) throw new TypeError('Invalid session');
     if (session.completed) return { session, result: { correct: true, message: 'Lesson already completed.', nextStep: null } };
     const step = STEPS[session.step];
     let correct = false, explanation = '';

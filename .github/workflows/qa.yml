@@ -1,0 +1,48 @@
+name: Universe One QA
+on:
+  push:
+    branches:
+      - 'qa/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run regression suite and curriculum gate
+        run: npm test
+      - name: Verify Android release remains blocked until device evidence exists
+        shell: bash
+        run: |
+          if npm run android:preflight; then
+            echo 'Android release gate unexpectedly passed; requires manual verification.'
+            exit 1
+          fi
+          echo 'Android packaging blockers correctly detected.'
+      - name: Stage and verify Android web payload
+        run: npm run android:stage
+      - name: Archive unsigned Android web payload for internal QA
+        uses: actions/upload-artifact@v4
+        with:
+          name: universe-one-android-web-qa
+          path: build/android-web/
+          retention-days: 7
+      - name: Security audit
+        run: npm run security:audit
+      - name: Verify release gate remains blocked without approval
+        shell: bash
+        run: |
+          if npm run release:audit; then
+            echo 'Release gate unexpectedly passed; stop QA.'
+            exit 1
+          fi
+          echo 'Release gate correctly blocks unapproved launch.'
