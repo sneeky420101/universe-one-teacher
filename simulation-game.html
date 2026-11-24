@@ -10,7 +10,7 @@
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
 const $=id=>document.getElementById(id),canvas=$('game');
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;
+let renderer;try{renderer=new THREE.WebGLRenderer({canvas,antialias:true});}catch(error){document.body.innerHTML='<main style="padding:24px;font:18px system-ui;color:white;background:#14283d;min-height:100vh"><h1>3D graphics unavailable</h1><p>Enable hardware acceleration or try an updated browser with WebGL support.</p><a style="color:#9de9fa" href="./index.html">Return to Universe One</a></main>';throw error;}renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene();scene.background=new THREE.Color('#152b40');scene.fog=new THREE.Fog('#152b40',20,55);
 const camera=new THREE.PerspectiveCamera(70,1,.1,100);camera.rotation.order='YXZ';
 scene.add(new THREE.HemisphereLight(0xc8e8ff,0x334451,2));
@@ -50,8 +50,8 @@ const raycaster=new THREE.Raycaster();const pointer=new THREE.Vector2();
 canvas.addEventListener('pointerdown',e=>{drag={id:e.pointerId,x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY,moved:false};canvas.setPointerCapture(e.pointerId)});
 canvas.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)>9)drag.moved=true;if(drag.moved){yaw-=dx*.004;pitch=Math.max(-1.2,Math.min(1.2,pitch-dy*.004))}drag.x=e.clientX;drag.y=e.clientY});
 canvas.addEventListener('pointerup',e=>{if(!drag||drag.id!==e.pointerId)return;if(!drag.moved){const rect=canvas.getBoundingClientRect();pointer.set((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1);raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(objects.flatMap(o=>[o.m,o.marker]));if(hits.length){const hit=hits[0];if(camera.position.distanceTo(hit.object.position)<4.5)choose(hit.object.userData.index);else $('status').textContent='Move closer to inspect this object.'}}drag=null});
-canvas.addEventListener('pointercancel',()=>drag=null);
-window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();pressed.add(e.key.toLowerCase());if(e.key.toLowerCase()==='e')interact()});window.addEventListener('keyup',e=>pressed.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>pressed.clear());
+canvas.addEventListener('pointercancel',()=>drag=null);canvas.addEventListener('lostpointercapture',()=>drag=null);
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();pressed.add(e.key.toLowerCase());if(e.key.toLowerCase()==='e')interact()});window.addEventListener('keyup',e=>pressed.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{pressed.clear();drag=null});document.addEventListener('visibilitychange',()=>{if(document.hidden){pressed.clear();drag=null}});
 document.querySelectorAll('[data-move]').forEach(b=>{const key=b.dataset.move;b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);pressed.add(key)});for(const event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,()=>pressed.delete(key))});
 $('interact').onclick=interact;$('reset').onclick=build;$('scenario').onchange=e=>{mode=e.target.value;build()};
 let last=performance.now();function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-last)/1000,.05);last=now;
