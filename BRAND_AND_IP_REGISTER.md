@@ -1,7 +1,7 @@
-# Bolt Frame Studios — brand and intellectual property register (draft)
+# VOLTFRAME STUDIOS — brand and intellectual property register (draft)
 
-Owner-designated parent brand: **Bolt Frame Studios by Brandon Hastings**.
-Brand identifier: **1788** (owner-provided reference; not an authentication secret).
+Owner-designated parent brand: **VOLTFRAME STUDIOS by Brandon Hastings**.
+Brand identifier: **1788** (owner's birthday-derived brand reference; not an authentication secret).
 
 ## Product family
 - **Universe One AI Teacher** — independent educational simulation/game product.
