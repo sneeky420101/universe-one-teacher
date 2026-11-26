@@ -50,7 +50,7 @@ test('server serves simulation API and interactive lab',async()=>{
   const lab=await fetch(origin+'/assembly-lab.html');
   assert.equal(lab.status,200);
   const html=await lab.text();
-  assert.match(html,/api\\/simulation/);
+  assert.match(html,/api\/simulation/);
   const student=await fetch(origin+'/student-hub.html');
   assert.equal(student.status,200);
   const studentHtml=await student.text();
