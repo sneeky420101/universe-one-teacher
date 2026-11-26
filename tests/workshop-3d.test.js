@@ -8,7 +8,7 @@ test('trades catalog is served as JSON',()=>assert.match(server,/file==='curricu
 
 test('automotive and excavator manipulation controls are wired',()=>{for(const term of ['hoodOpen','wheelRemoved','boomAngle','bucketAngle','id="action"','addEventListener(\'click\''])assert.ok(workshop.includes(term),term)});
 
-test('guided mission offers keyboard-accessible object selection and progression',()=>{assert.match(workshop,/id="nextTarget"/);assert.match(workshop,/function selectPart\(part\)/);assert.match(workshop,/Next objective: inspect/);assert.match(workshop,/Mission complete:/)});
+test('guided mission offers keyboard-accessible object selection and progression',()=>{assert.match(workshop,/id="nextTarget"/);assert.match(workshop,/function selectPart\(part\)/);assert.match(workshop,/Next objective: inspect/);assert.match(workshop,/All components inspected\. Complete the knowledge checks to finish the mission\./);assert.match(workshop,/Practice mission complete:/)});
 
 test('3D trade missions include scored, single-attempt scenario assessments',()=>{for(const marker of ['id="challenge"','id="score"','const assessments=','function renderChallenge(part)','if(answered)return','correctCount=correctParts.size','practice only; not a professional qualification'])assert.ok(workshop.includes(marker),marker)});
 
