@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Universe One | Workshop Exploration</title>
+<style>body{margin:0;background:#07111d;color:#e9f4ff;font:15px system-ui}header{padding:12px 16px;background:#13243a;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}a{color:#85e5df}main{max-width:1250px;margin:auto;padding:12px}#view{height:min(67vh,690px);min-height:320px;border:1px solid #486c86;border-radius:14px;overflow:hidden;position:relative;background:#101f30}canvas{display:block;width:100%;height:100%}#hud{position:absolute;top:12px;left:12px;background:#09192bdf;padding:12px;border-radius:9px;max-width:290px;pointer-events:none}#hint{position:absolute;bottom:12px;left:12px;background:#09192bdf;padding:10px;border-radius:8px;max-width:80%}button{background:#2cbca8;color:#031f24;border:0;border-radius:8px;padding:12px 16px;font-weight:700;cursor:pointer;touch-action:none}button:focus-visible{outline:3px solid white}.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}.pad{display:grid;grid-template-columns:repeat(3,52px);gap:4px}.pad button{padding:12px 0}#status{min-height:28px}small{color:#bed1df}</style></head>
+<body><header><strong>UNIVERSE ONE AI TEACHER · 3D Workshop Mission</strong><a href="./index.html">⌂ Home</a></header>
+<main><h1>Explore the Engineering Workshop</h1><p>Move around the workshop, inspect three stations, collect the correct parts and finish a real in-world training mission. Keyboard: WASD or arrow keys; E to interact. Touch: directional pad and Interact.</p>
+<div id="view"><div id="hud"><strong>Workshop orientation</strong><div id="objective">Loading scene…</div><div id="progress">0 / 3 stations</div></div><div id="hint">Preparing graphics…</div></div>
+<dialog id="challenge" aria-labelledby="challengeTitle" style="max-width:min(92vw,500px);border:2px solid #45d6bf;border-radius:14px;background:#10263b;color:white;padding:22px"><h2 id="challengeTitle"></h2><p id="challengeQuestion"></p><div id="challengeAnswers" style="display:grid;gap:10px"></div><p id="challengeFeedback" role="status"></p><button id="closeChallenge">Return to workshop</button></dialog>
+<div class="controls"><div class="pad"><span></span><button data-move="up" aria-label="Move forward">▲</button><span></span><button data-move="left" aria-label="Move left">◀</button><button data-move="down" aria-label="Move backward">▼</button><button data-move="right" aria-label="Move right">▶</button></div><button id="interact">Inspect / Interact (E)</button><button id="restart">Restart mission</button></div>
+<p id="status" role="status" aria-live="polite"></p><small>Original conceptual training scenario, not a substitute for supervised equipment safety training. Progress saved locally on this device; Universe Storage synchronization is not yet connected.</small>
+</main><script type="module">
+const view=document.querySelector('#view'), hint=document.querySelector('#hint'),status=document.querySelector('#status'),objective=document.querySelector('#objective'),progress=document.querySelector('#progress');
+let THREE;try{THREE=await import('https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js')}catch{hint.textContent='3D graphics library could not load. Check your connection and reload.';throw Error('Three.js unavailable')}
+const scene=new THREE.Scene();scene.background=new THREE.Color('#182a3c');scene.fog=new THREE.Fog('#182a3c',18,40);
+const camera=new THREE.PerspectiveCamera(65,1,.1,80);const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;view.prepend(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xbce8ff,0x243044,2.0));const sun=new THREE.DirectionalLight(0xffe6c0,2.7);sun.position.set(5,12,7);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-14;sun.shadow.camera.right=14;sun.shadow.camera.top=14;sun.shadow.camera.bottom=-14;scene.add(sun);
+const mat=(color,metalness=0,roughness=.65)=>new THREE.MeshStandardMaterial({color,metalness,roughness});
+const floorMat=mat('#3e5263'),steel=mat('#9cabb5',.75,.32),dark=mat('#253746',.35),wood=mat('#966b46'),gold=mat('#ffc85a',.5),green=mat('#43e3b7',.2);
+function box(w,h,d,m,x,y,z){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);return o}
+box(24,.25,22,floorMat,0,-.18,0);box(24,5,.3,dark,0,2.4,-10.8);box(.3,5,22,dark,-12,2.4,0);box(.3,5,22,dark,12,2.4,0);
+for(let i=-10;i<=10;i+=2){box(.025,.012,22,mat('#647789'),i,-.045,0);box(24,.012,.025,mat('#647789'),0,-.045,i)}
+for(let i=-9;i<=9;i+=6){box(3,1.7,.08,mat('#4b92ac',.25,.22),i,2.9,-10.6);box(3.4,.12,.22,steel,i,3.85,-10.55)}
+for(const x of [-8,0,8]){box(4,.2,2.3,wood,x,1,-4);for(const dx of [-1.7,1.7])for(const dz of [-.85,.85])box(.16,1,.16,steel,x+dx,.48,-4+dz);box(3,.9,.2,dark,x,2.5,-5)}
+// Detailed, separate workstations: motor, electrical control, and pipe assembly.
+box(1.5,.65,1.1,steel,-8,1.44,-4);for(let j=0;j<4;j++)box(.23,.48,.65,dark,-8.55+j*.37,2,-4);
+box(1.7,1.15,.24,dark,0,1.75,-4.5);for(let j=0;j<5;j++){box(.16,.15,.08,j%2?gold:green,-.65+j*.32,1.55,-4.34);box(.09,.3,.07,steel,-.65+j*.32,2.02,-4.34)}
+box(2,.18,.22,steel,8,1.55,-4);box(.2,.7,.2,steel,7.1,1.65,-4);box(.2,.7,.2,steel,8.9,1.65,-4);box(.65,.45,.55,gold,8,1.5,-4);
+for(let x=-9;x<=9;x+=3){box(1.7,2.2,.7,dark,x,1.1,8.8);box(1.4,.08,.72,steel,x,1.65,8.8)}
+const player=new THREE.Group();const body=new THREE.Mesh(new THREE.CapsuleGeometry(.35,.75,4,8),mat('#32b9da',.3));body.position.y=.9;player.add(body);const visor=new THREE.Mesh(new THREE.BoxGeometry(.5,.17,.15),mat('#b4f9ff',.4,.2));visor.position.set(0,1.23,-.28);player.add(visor);scene.add(player);
+const stations=[{x:-8,z:-2.3,title:'Engine inspection',question:'Before inspecting an engine, what is the safest first action?',answers:['Verify power is off and equipment is secured','Touch moving components'],correct:0},{x:0,z:-2.3,title:'Electrical inspection',question:'What should happen before opening an electrical enclosure?',answers:['Verify isolation using an appropriate procedure','Assume a switch means no voltage'],correct:0},{x:8,z:-2.3,title:'Pipe fitting inspection',question:'Before disassembling a pipe fitting, what must you check?',answers:['Isolation and pressure release','Loosen it while pressurized'],correct:0}];
+const markers=stations.map(s=>{const mesh=new THREE.Mesh(new THREE.TorusGeometry(.65,.075,10,28),green);mesh.rotation.x=Math.PI/2;mesh.position.set(s.x,.15,s.z);scene.add(mesh);return mesh});
+let done=new Set(),active=null;const keys=new Set();let pos=new THREE.Vector3(0,0,5),last=performance.now();player.position.copy(pos);
+function updateHUD(){progress.textContent=done.size+' / 3 stations complete';objective.textContent=done.size===3?'Mission complete! All three inspections passed.':'Find glowing station markers and inspect each workstation.';markers.forEach((m,i)=>m.material=done.has(i)?steel:green)}
+const dialog=document.querySelector('#challenge'),answerHost=document.querySelector('#challengeAnswers'),feedback=document.querySelector('#challengeFeedback');
+document.querySelector('#closeChallenge').onclick=()=>dialog.close();
+dialog.addEventListener('close',()=>{active=null;keys.clear()});
+function interact(){
+ if(active!==null)return;
+ const near=stations.map((s,i)=>({i,d:Math.hypot(pos.x-s.x,pos.z-s.z)})).filter(o=>o.d<2.4&&!done.has(o.i)).sort((a,b)=>a.d-b.d)[0];
+ if(!near){status.textContent='Move closer to an unfinished glowing station.';return}
+ active=near.i;const s=stations[active];
+ document.querySelector('#challengeTitle').textContent=s.title;
+ document.querySelector('#challengeQuestion').textContent=s.question;
+ feedback.textContent='Choose the safest answer to complete this station.';
+ answerHost.replaceChildren();
+ s.answers.forEach((answer,index)=>{
+  const b=document.createElement('button');b.textContent=answer;b.onclick=()=>{
+   if(index===s.correct){
+    done.add(active);status.textContent=s.title+' completed. '+(done.size===3?'Workshop mission complete!':'Continue exploring.');
+    feedback.textContent='Correct! Safety inspection passed.';answerHost.replaceChildren();
+    try{localStorage.setItem('universe-one-workshop-mission-v1',JSON.stringify({completed:[...done],updatedAt:new Date().toISOString()}))}catch{feedback.textContent+=' Progress could not be saved on this device.'}
+    updateHUD();
+   }else{feedback.textContent='Not quite. Check isolation and safety requirements before proceeding.'}
+  };answerHost.append(b)
+ });
+ keys.clear();dialog.showModal();
+}
+document.querySelector('#interact').onclick=interact;document.querySelector('#restart').onclick=()=>{done.clear();pos.set(0,0,5);player.position.copy(pos);status.textContent='Mission restarted.';updateHUD();try{localStorage.removeItem('universe-one-workshop-mission-v1')}catch{}};
+window.addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault();keys.add(e.key.toLowerCase());if(e.key.toLowerCase()==='e'&&!e.repeat)interact()});window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>keys.clear());
+document.querySelectorAll('[data-move]').forEach(b=>{const k={up:'w',down:'s',left:'a',right:'d'}[b.dataset.move];b.addEventListener('pointerdown',e=>{e.preventDefault();b.setPointerCapture(e.pointerId);keys.add(k)});for(const event of ['pointerup','pointercancel','lostpointercapture'])b.addEventListener(event,()=>keys.delete(k))});
+function resize(){const w=view.clientWidth,h=view.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false)}new ResizeObserver(resize).observe(view);resize();
+function frame(now){const dt=dialog.open?0:Math.min((now-last)/1000,.05);last=now;const dx=Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));const dz=Number(keys.has('s')||keys.has('arrowdown'))-Number(keys.has('w')||keys.has('arrowup'));const len=Math.hypot(dx,dz)||1;pos.x=THREE.MathUtils.clamp(pos.x+dx/len*4*dt,-10.8,10.8);pos.z=THREE.MathUtils.clamp(pos.z+dz/len*4*dt,-8.5,7.4);player.position.copy(pos);if(dx||dz)player.rotation.y=Math.atan2(-dx,-dz);const desired=new THREE.Vector3(pos.x,5.6,pos.z+8.5);camera.position.lerp(desired,Math.min(1,dt*5));camera.lookAt(pos.x,1,pos.z-2);markers.forEach((m,i)=>{m.rotation.z+=dt*.35;m.position.y=.18+Math.sin(now*.002+i)*.08});const near=stations.findIndex((s,i)=>!done.has(i)&&Math.hypot(pos.x-s.x,pos.z-s.z)<2.4);hint.textContent=done.size===3?'All stations complete — mission passed.':near>=0?'Press E or tap Interact: '+stations[near].title:'Move toward the glowing rings to begin a hands-on inspection.';renderer.render(scene,camera);requestAnimationFrame(frame)}
+try{const save=JSON.parse(localStorage.getItem('universe-one-workshop-mission-v1')||'{}');if(Array.isArray(save.completed))done=new Set(save.completed.filter(n=>Number.isInteger(n)&&n>=0&&n<3))}catch{}updateHUD();requestAnimationFrame(frame);
+</script></body></html>
